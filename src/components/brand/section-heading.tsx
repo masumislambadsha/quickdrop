@@ -1,3 +1,4 @@
+import { type DoodleSpec, Doodles } from "@/components/brand/doodles";
 import { Reveal } from "@/components/brand/reveal";
 import { cn } from "@/lib/utils";
 
@@ -9,6 +10,7 @@ export function SectionHeading({
   description,
   dark = false,
   align = "center",
+  doodles,
 }: {
   eyebrow?: string;
   title: string;
@@ -17,14 +19,16 @@ export function SectionHeading({
   description?: string;
   dark?: boolean;
   align?: "center" | "left";
+  doodles?: DoodleSpec[];
 }) {
   return (
     <Reveal
       className={cn(
-        "max-w-3xl",
+        "relative max-w-3xl",
         align === "center" ? "mx-auto text-center" : "text-left",
       )}
     >
+      {doodles ? <Doodles items={doodles} /> : null}
       {eyebrow ? (
         <p
           className={cn(
@@ -38,12 +42,12 @@ export function SectionHeading({
       <h2
         className={cn(
           "display text-[clamp(32px,5vw,64px)]",
-          dark ? "text-lime" : "text-ink",
+          dark ? "display-on-dark" : "text-ink",
         )}
       >
         {title}{" "}
         {highlight ? (
-          <span className={dark ? "text-cream" : "text-forest"}>
+          <span className={dark ? "text-white" : "text-forest"}>
             {highlight}
           </span>
         ) : null}{" "}

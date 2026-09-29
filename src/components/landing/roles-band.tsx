@@ -34,6 +34,29 @@ export function RolesBand() {
           title="Three roles."
           highlight="Zero chaos."
           description="Everyone sees exactly their world — customers book, couriers deliver, operations orchestrates."
+          doodles={[
+            {
+              shape: "star",
+              color: "lime",
+              className: "-left-4 -top-6 rotate-12",
+              delay: 0.4,
+              size: 30,
+            },
+            {
+              shape: "check",
+              color: "white",
+              className: "-right-2 top-0 -rotate-6",
+              delay: 0,
+              size: 26,
+            },
+            {
+              shape: "pin",
+              color: "orange",
+              className: "right-8 -bottom-8 rotate-6",
+              delay: 0.8,
+              size: 28,
+            },
+          ]}
         />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {roles.map((r, i) => (

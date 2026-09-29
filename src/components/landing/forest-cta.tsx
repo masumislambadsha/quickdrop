@@ -15,7 +15,7 @@ export function ForestCta() {
                 size="lg"
                 className="absolute -top-8 right-8 bg-pop text-ink"
               />
-              <h2 className="display text-[clamp(40px,6vw,80px)] text-lime">
+              <h2 className="display display-on-dark text-[clamp(40px,6vw,80px)]">
                 Let&apos;s move.
               </h2>
               <p className="mt-4 max-w-md text-base leading-relaxed text-mint md:text-lg">

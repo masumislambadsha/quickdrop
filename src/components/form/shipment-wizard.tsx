@@ -239,7 +239,7 @@ export function ShipmentWizard() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Package type" error={e.packageType?.message}>
                   <select
-                    className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                    className="h-11 w-full rounded-full border-2 border-ink/15 bg-white px-4 text-sm font-semibold text-ink focus:border-leaf focus:outline-none"
                     {...form.register("packageType")}
                   >
                     <option value="DOCUMENT">Document</option>
@@ -251,7 +251,7 @@ export function ShipmentWizard() {
                 </Field>
                 <Field label="Speed tier" error={e.pricingTier?.message}>
                   <select
-                    className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                    className="h-11 w-full rounded-full border-2 border-ink/15 bg-white px-4 text-sm font-semibold text-ink focus:border-leaf focus:outline-none"
                     {...form.register("pricingTier")}
                   >
                     <option value="STANDARD">Standard</option>

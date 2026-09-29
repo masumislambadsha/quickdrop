@@ -12,8 +12,10 @@ import {
   Truck,
 } from "lucide-react";
 import { motion } from "motion/react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Doodles } from "@/components/brand/doodles";
 import { Reveal } from "@/components/brand/reveal";
 import { Sticker } from "@/components/brand/sticker";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -26,7 +28,7 @@ function RouteVisual() {
     { city: "Doorstep", done: false },
   ];
   return (
-    <div className="relative overflow-hidden rounded-[20px] border border-lime/15 bg-pine p-6">
+    <div className="relative overflow-hidden rounded-[20px] border border-lime/15 bg-pine/85 p-6 backdrop-blur-sm">
       <div className="hero-grid absolute inset-0" />
       <div className="relative">
         <div className="flex items-center justify-between">
@@ -107,14 +109,46 @@ export function Hero() {
       />
 
       <div className="relative mx-auto grid max-w-[1200px] items-center gap-12 px-6 py-20 md:py-28 lg:grid-cols-2">
-        <div>
+        <div className="relative">
+          <Doodles
+            items={[
+              {
+                shape: "star",
+                color: "lime",
+                className: "-left-3 -top-8 -rotate-12",
+                delay: 0,
+                size: 30,
+              },
+              {
+                shape: "arrow",
+                color: "orange",
+                className: "-right-4 top-2 rotate-12",
+                delay: 0.4,
+                size: 28,
+              },
+              {
+                shape: "check",
+                color: "white",
+                className: "-left-6 bottom-10 rotate-6",
+                delay: 0.8,
+                size: 26,
+              },
+              {
+                shape: "lines",
+                color: "lime",
+                className: "right-10 -bottom-4 -rotate-6",
+                delay: 1.2,
+                size: 30,
+              },
+            ]}
+          />
           <Reveal>
             <p className="pill-tag bg-lime/15 text-lime">
               Courier & logistics platform
             </p>
           </Reveal>
           <Reveal delay={0.05}>
-            <h1 className="display mt-5 text-[clamp(48px,7vw,96px)] text-lime">
+            <h1 className="display display-on-dark mt-5 text-[clamp(48px,7vw,96px)]">
               You&apos;re free
               <br />
               to ship.
@@ -169,11 +203,21 @@ export function Hero() {
           transition={{ duration: 0.5, delay: 0.15 }}
           className="relative"
         >
-          <RouteVisual />
+          <Image
+            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200&q=80"
+            alt="Confident courier partner smiling"
+            fill
+            priority
+            sizes="(max-width: 1024px) 0, 45vw"
+            className="hero-photo-fade pointer-events-none absolute -right-6 top-1/2 hidden h-[115%] w-[62%] -translate-y-1/2 rounded-[20px] object-cover opacity-85 mix-blend-luminosity lg:block"
+          />
+          <div className="relative z-10 lg:mr-[38%]">
+            <RouteVisual />
+          </div>
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -left-4 -top-5 rounded-2xl bg-lime px-4 py-2.5 shadow-xl md:-left-8"
+            className="absolute -left-4 -top-5 z-20 rounded-2xl bg-lime px-4 py-2.5 shadow-xl md:-left-8"
           >
             <p className="text-xs font-black uppercase tracking-wide text-ink">
               Delivered

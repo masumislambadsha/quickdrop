@@ -24,6 +24,22 @@ export function PricingSection() {
           title="Yes, you can afford"
           highlight="fast."
           description="Base fare plus distance and weight — adjusted by speed tier and package type. Estimate it right here, same math as the backend."
+          doodles={[
+            {
+              shape: "star",
+              color: "orange",
+              className: "-left-3 top-2 rotate-12",
+              delay: 0.4,
+              size: 26,
+            },
+            {
+              shape: "spark",
+              color: "lime",
+              className: "-right-4 -top-2 -rotate-12",
+              delay: 1.2,
+              size: 28,
+            },
+          ]}
         />
         <Reveal className="mx-auto mt-10 max-w-2xl" delay={0.1}>
           <div className="card-float p-2">

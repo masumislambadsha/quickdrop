@@ -78,11 +78,27 @@ body {
 /* ——— brand primitives ——— */
 
 .display {
-  font-family: var(--font-display), system-ui, sans-serif;
-  font-weight: 900;
+  font-family: "Syne", var(--font-display), system-ui, sans-serif;
+  font-weight: 800;
   font-style: italic;
-  letter-spacing: -0.04em;
+  letter-spacing: -1.5px;
   line-height: 0.95;
+}
+
+h1,
+h2 {
+  font-family: "Syne", var(--font-display), system-ui, sans-serif;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: -1.5px;
+}
+
+/* electric neon for headings on dark — pure #B3F23F with a glow lift */
+.display-on-dark {
+  color: #b3f23f;
+  text-shadow:
+    0 0 18px rgba(179, 242, 63, 0.35),
+    0 0 60px rgba(179, 242, 63, 0.18);
 }
 
 .btn-lime {
@@ -201,6 +217,25 @@ body {
     transparent 1.5px
   );
   background-size: 22px 22px;
+}
+
+@keyframes doodle-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.doodle-float {
+  animation: doodle-float 3s ease-in-out infinite;
+}
+
+.hero-photo-fade {
+  mask-image: linear-gradient(to right, transparent 0%, black 30%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 30%);
 }
 
 * {

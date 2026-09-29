@@ -37,6 +37,22 @@ export function RolePaths() {
           eyebrow="How it flows"
           title="One platform."
           highlight="Three paths to delivered."
+          doodles={[
+            {
+              shape: "arrow",
+              color: "lime",
+              className: "-left-2 -top-3 -rotate-12",
+              delay: 0,
+              size: 28,
+            },
+            {
+              shape: "box",
+              color: "orange",
+              className: "-right-3 top-8 rotate-6",
+              delay: 0.8,
+              size: 26,
+            },
+          ]}
         />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {paths.map((p, i) => (
@@ -82,10 +98,10 @@ export function SuccessStats() {
           <div className="grid grid-cols-2 gap-6 rounded-[20px] bg-ink p-8 md:grid-cols-4 md:p-10">
             {stats.map((s) => (
               <div key={s.label} className="text-center">
-                <p className="display text-4xl text-lime md:text-5xl">
+                <p className="display display-on-dark text-4xl md:text-5xl">
                   {s.value}
                 </p>
-                <p className="mt-1 text-sm font-semibold text-cream/60">
+                <p className="mt-1 text-sm font-semibold text-cream">
                   {s.label}
                 </p>
               </div>

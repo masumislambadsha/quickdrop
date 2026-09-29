@@ -90,6 +90,29 @@ export function Features() {
           title="Tools to keep you"
           highlight="delivering."
           description="Booking, tracking, and payments in one place — no phone calls, no spreadsheets, no wondering where your parcel is."
+          doodles={[
+            {
+              shape: "spark",
+              color: "orange",
+              className: "-left-2 -top-4 -rotate-12",
+              delay: 0,
+              size: 28,
+            },
+            {
+              shape: "box",
+              color: "lime",
+              className: "-right-3 top-6 rotate-12",
+              delay: 0.8,
+              size: 30,
+            },
+            {
+              shape: "arrow",
+              color: "orange",
+              className: "right-16 -bottom-6 rotate-6",
+              delay: 1.2,
+              size: 24,
+            },
+          ]}
         />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {cards.map((c, i) => (

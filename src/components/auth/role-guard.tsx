@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode, useEffect } from "react";
 import { useGetMe } from "@/hooks";
 import type { UserRole } from "@/types";
@@ -14,14 +14,16 @@ interface RoleGuardProps {
 
 export default function RoleGuard({ children, roles }: RoleGuardProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const { data, isPending, isError } = useGetMe();
   const user = data?.data;
   const isAuthorized = !!user && roles.includes(user.role);
 
   useEffect(() => {
     if (isPending) return;
-    if (isError || !user) router.replace("/login");
-  }, [isPending, isError, user, router]);
+    if (isError || !user)
+      router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+  }, [isPending, isError, user, router, pathname]);
 
   if (isPending) return <AuthLoading />;
   if (isError || !user) return <AuthLoading label="Redirecting to login..." />;

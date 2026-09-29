@@ -1,6 +1,12 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import {
+  CreditCard,
+  Loader2,
+  Package,
+  PackageCheck,
+  Truck,
+} from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -32,16 +38,18 @@ export function CustomerOverview() {
   const shipments = data.data;
   const count = (s: string) => shipments.filter((x) => x.status === s).length;
   const stats = [
-    { label: "Total shipments", value: shipments.length },
+    { label: "Total shipments", value: shipments.length, icon: Package },
     {
       label: "In progress",
       value:
         count("PICKED_UP") + count("IN_TRANSIT") + count("OUT_FOR_DELIVERY"),
+      icon: Truck,
     },
-    { label: "Delivered", value: count("DELIVERED") },
+    { label: "Delivered", value: count("DELIVERED"), icon: PackageCheck },
     {
       label: "Awaiting payment",
       value: shipments.filter((x) => x.paymentStatus === "UNPAID").length,
+      icon: CreditCard,
     },
   ];
   const recent = shipments.slice(0, 5);
@@ -50,25 +58,30 @@ export function CustomerOverview() {
     <div className="grid gap-6">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
-          <Card key={s.label}>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+          <Card key={s.label} className="card-float border-0">
+            <CardHeader className="flex flex-row items-center justify-between pb-1">
+              <CardTitle className="text-sm font-bold text-ink/60">
                 {s.label}
               </CardTitle>
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-mint text-forest">
+                <s.icon className="h-4 w-4" strokeWidth={2.5} />
+              </span>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold">{s.value}</p>
+              <p className="display text-4xl text-ink">{s.value}</p>
             </CardContent>
           </Card>
         ))}
       </div>
-      <Card>
+      <Card className="border-ink/10">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Recent shipments</CardTitle>
+            <CardTitle className="display text-xl text-ink">
+              Recent shipments
+            </CardTitle>
             <Link
               href="/dashboard/shipments"
-              className="text-sm font-medium text-primary hover:underline"
+              className="text-sm font-bold text-forest hover:underline"
             >
               View all
             </Link>
@@ -84,13 +97,13 @@ export function CustomerOverview() {
             <Link
               key={s.id}
               href={`/dashboard/shipments/${s.id}`}
-              className="flex items-center justify-between rounded-md border p-3 hover:bg-accent"
+              className="flex items-center justify-between rounded-2xl border border-ink/10 p-3 transition-colors hover:bg-cream"
             >
               <div>
-                <p className="font-mono text-sm font-semibold">
+                <p className="font-mono text-sm font-bold text-ink">
                   {s.trackingNumber}
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-ink/50">
                   {s.origin} → {s.destination}
                 </p>
               </div>
@@ -100,10 +113,7 @@ export function CustomerOverview() {
         </CardContent>
       </Card>
       <div>
-        <Link
-          href="/dashboard/shipments/new"
-          className="inline-block rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
-        >
+        <Link href="/dashboard/shipments/new" className="btn-lime !text-sm">
           + New shipment
         </Link>
       </div>

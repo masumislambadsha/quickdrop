@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import { StatusBadge } from "@/components/ui/status-badge";
 import {
   useConfirmDelivery,
@@ -143,19 +144,16 @@ export function DeliveryDetail({ id }: { id: string }) {
               <CardContent className="grid gap-3">
                 <div className="grid gap-1.5">
                   <Label>New status</Label>
-                  <select
-                    className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                  <Select
+                    label="New status"
                     value={status}
-                    onChange={(e) =>
-                      setStatus(e.target.value as DeliveryStatus)
-                    }
-                  >
-                    {NEXT_STATUSES.map((s) => (
-                      <option key={s} value={s}>
-                        {s.replaceAll("_", " ")}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(v) => setStatus(v as DeliveryStatus)}
+                    options={NEXT_STATUSES.map((s) => ({
+                      value: s,
+                      label: s.replaceAll("_", " "),
+                    }))}
+                    className="w-full justify-between"
+                  />
                 </div>
                 {status === "FAILED" ? (
                   <div className="grid gap-1.5">

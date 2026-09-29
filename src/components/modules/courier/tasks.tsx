@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { PaginationControls } from "@/components/modules/shipments/shipment-table";
+import { DELIVERY_STATUS_OPTIONS } from "@/components/modules/shipments/status-options";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Select } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/ui/status-badge";
 import {
@@ -16,17 +18,6 @@ import {
 import { useAssignedDeliveries, useListParams, useMyDeliveries } from "@/hooks";
 import { getErrorMessage } from "@/lib/apiClient";
 import type { DeliveryStatus } from "@/types";
-
-const STATUSES: (DeliveryStatus | "")[] = [
-  "",
-  "ASSIGNED",
-  "PICKED_UP",
-  "IN_TRANSIT",
-  "OUT_FOR_DELIVERY",
-  "DELIVERED",
-  "FAILED",
-  "RETURNED",
-];
 
 export function CourierTasks() {
   const { params, setParams } = useListParams();
@@ -77,20 +68,12 @@ export function CourierTasks() {
       <div className="grid gap-4">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Delivery history</h2>
-          <select
-            className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+          <Select
+            label="Filter by delivery status"
             value={params.status}
-            onChange={(e) =>
-              setParams({ status: e.target.value }, { resetPage: true })
-            }
-            aria-label="Filter by delivery status"
-          >
-            {STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {s ? s.replaceAll("_", " ") : "All statuses"}
-              </option>
-            ))}
-          </select>
+            onChange={(v) => setParams({ status: v }, { resetPage: true })}
+            options={DELIVERY_STATUS_OPTIONS}
+          />
         </div>
         {mine.isPending ? (
           <div className="grid gap-2">

@@ -1,53 +1,67 @@
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import type { DeliveryStatus, PaymentStatus, ShipmentStatus } from "@/types";
 
-const shipmentVariant: Record<
-  ShipmentStatus,
-  "default" | "secondary" | "success" | "warning" | "destructive"
-> = {
-  REQUESTED: "secondary",
-  PICKED_UP: "default",
-  IN_TRANSIT: "default",
-  OUT_FOR_DELIVERY: "warning",
-  DELIVERED: "success",
-  FAILED: "destructive",
-  CANCELLED: "destructive",
+type Tone = "neutral" | "info" | "transit" | "action" | "good" | "bad";
+
+const shipmentTone: Record<ShipmentStatus, Tone> = {
+  REQUESTED: "neutral",
+  PICKED_UP: "info",
+  IN_TRANSIT: "transit",
+  OUT_FOR_DELIVERY: "action",
+  DELIVERED: "good",
+  FAILED: "bad",
+  CANCELLED: "bad",
 };
 
-const deliveryVariant: Record<
-  DeliveryStatus,
-  "default" | "secondary" | "success" | "warning" | "destructive"
-> = {
-  ASSIGNED: "secondary",
-  PICKED_UP: "default",
-  IN_TRANSIT: "default",
-  OUT_FOR_DELIVERY: "warning",
-  DELIVERED: "success",
-  FAILED: "destructive",
-  RETURNED: "destructive",
+const deliveryTone: Record<DeliveryStatus, Tone> = {
+  ASSIGNED: "neutral",
+  PICKED_UP: "info",
+  IN_TRANSIT: "transit",
+  OUT_FOR_DELIVERY: "action",
+  DELIVERED: "good",
+  FAILED: "bad",
+  RETURNED: "bad",
 };
 
-const paymentVariant: Record<
-  PaymentStatus,
-  "default" | "secondary" | "success" | "warning" | "destructive"
-> = {
-  UNPAID: "secondary",
-  PENDING: "warning",
-  PAID: "success",
-  FAILED: "destructive",
-  CANCELLED: "destructive",
-  REFUNDED: "default",
+const paymentTone: Record<PaymentStatus, Tone> = {
+  UNPAID: "neutral",
+  PENDING: "action",
+  PAID: "good",
+  FAILED: "bad",
+  CANCELLED: "bad",
+  REFUNDED: "info",
+};
+
+const toneClass: Record<Tone, string> = {
+  neutral: "bg-ink/10 text-ink",
+  info: "bg-forest text-cream",
+  transit: "bg-leaf/25 text-ink",
+  action: "bg-pop text-ink",
+  good: "bg-lime text-ink",
+  bad: "bg-[#d64545] text-white",
 };
 
 export function StatusBadge({
   status,
+  className,
 }: {
   status: ShipmentStatus | DeliveryStatus | PaymentStatus;
+  className?: string;
 }) {
-  const variant =
-    shipmentVariant[status as ShipmentStatus] ??
-    deliveryVariant[status as DeliveryStatus] ??
-    paymentVariant[status as PaymentStatus] ??
-    "default";
-  return <Badge variant={variant}>{status.replaceAll("_", " ")}</Badge>;
+  const tone =
+    shipmentTone[status as ShipmentStatus] ??
+    deliveryTone[status as DeliveryStatus] ??
+    paymentTone[status as PaymentStatus] ??
+    "neutral";
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-[0.06em]",
+        toneClass[tone],
+        className,
+      )}
+    >
+      {status.replaceAll("_", " ")}
+    </span>
+  );
 }

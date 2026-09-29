@@ -3,7 +3,6 @@
 import { LogOut, Package } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { useGetMe, useLogout } from "@/hooks";
 import { cn } from "@/lib/utils";
 
@@ -22,27 +21,32 @@ export function DashboardShell({
   const user = data?.data;
 
   return (
-    <div className="min-h-screen md:grid md:grid-cols-[240px_1fr]">
-      <aside className="border-b md:border-b-0 md:border-r bg-muted/30">
-        <div className="flex items-center justify-between px-4 py-4 md:flex-col md:items-stretch md:gap-6 md:p-6">
-          <Link href="/" className="flex items-center gap-2 font-bold">
-            <span className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <Package className="h-4 w-4" />
+    <div className="min-h-screen bg-cream md:grid md:grid-cols-[260px_1fr]">
+      <aside className="bg-ink text-cream">
+        <div className="flex items-center justify-between px-4 py-4 md:flex-col md:items-stretch md:gap-6 md:p-6 md:min-h-screen">
+          <Link href="/" className="flex items-center gap-2">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-lime text-ink">
+              <Package className="h-5 w-5" strokeWidth={2.5} />
             </span>
-            QuickDrop
+            <span className="display text-lg text-cream">QuickDrop</span>
           </Link>
-          <nav className="flex gap-1 overflow-x-auto md:flex-col">
+          <nav className="flex gap-1.5 overflow-x-auto md:flex-col">
             {links.map((l) => {
-              const active = pathname === l.href;
+              const active =
+                pathname === l.href ||
+                (l.href !== "/admin" &&
+                  l.href !== "/dashboard" &&
+                  l.href !== "/courier" &&
+                  pathname.startsWith(`${l.href}/`));
               return (
                 <Link
                   key={l.href}
                   href={l.href}
                   className={cn(
-                    "whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium",
+                    "whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold transition-all",
                     active
-                      ? "bg-primary text-primary-foreground"
-                      : "hover:bg-accent",
+                      ? "bg-lime text-ink"
+                      : "text-cream/70 hover:bg-white/10 hover:text-cream",
                   )}
                 >
                   {l.label}
@@ -50,31 +54,35 @@ export function DashboardShell({
               );
             })}
           </nav>
-          <div className="hidden md:block border-t pt-4 text-sm">
-            <p className="truncate font-medium">{user?.name}</p>
-            <p className="truncate text-xs text-muted-foreground">
-              {user?.email}
-            </p>
-            <p className="mt-1 inline-block rounded bg-secondary px-2 py-0.5 text-[11px] font-semibold">
-              {user?.role}
-            </p>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mt-2 w-full justify-start px-2"
+          <div className="hidden md:block border-t border-cream/10 pt-4 text-sm md:mt-auto">
+            <p className="truncate font-bold text-cream">{user?.name}</p>
+            <p className="truncate text-xs text-cream/50">{user?.email}</p>
+            <p className="pill-tag mt-2 bg-lime/15 text-lime">{user?.role}</p>
+            <button
+              type="button"
               disabled={isPending}
               onClick={() => doLogout()}
+              className="mt-3 inline-flex w-full items-center gap-2 rounded-full border border-cream/20 px-4 py-2 text-sm font-bold text-cream/80 transition-colors hover:border-lime hover:text-lime disabled:opacity-50 cursor-pointer"
             >
               <LogOut className="h-4 w-4" /> Logout
-            </Button>
+            </button>
           </div>
+          <button
+            type="button"
+            disabled={isPending}
+            onClick={() => doLogout()}
+            className="md:hidden rounded-full border border-cream/20 p-2 text-cream/80"
+            aria-label="Logout"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
         </div>
       </aside>
       <div className="flex min-h-screen flex-col">
-        <div className="border-b px-4 py-4 md:px-8">
-          <h1 className="text-xl font-bold">{title}</h1>
+        <div className="px-4 py-6 md:px-8">
+          <h1 className="display text-3xl text-ink md:text-4xl">{title}</h1>
         </div>
-        <main className="flex-1 p-4 md:p-8">{children}</main>
+        <main className="flex-1 p-4 pt-0 md:p-8 md:pt-0">{children}</main>
       </div>
     </div>
   );

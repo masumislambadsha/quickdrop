@@ -5,21 +5,12 @@ import {
   ShipmentTable,
   ShipmentTableSkeleton,
 } from "@/components/modules/shipments/shipment-table";
+import { SHIPMENT_STATUS_OPTIONS } from "@/components/modules/shipments/status-options";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { useDebounce, useListParams, useMyShipments } from "@/hooks";
 import { getErrorMessage } from "@/lib/apiClient";
 import type { ShipmentStatus } from "@/types";
-
-const STATUSES: (ShipmentStatus | "")[] = [
-  "",
-  "REQUESTED",
-  "PICKED_UP",
-  "IN_TRANSIT",
-  "OUT_FOR_DELIVERY",
-  "DELIVERED",
-  "FAILED",
-  "CANCELLED",
-];
 
 export function MyShipmentsList() {
   const { params, setParams } = useListParams();
@@ -44,20 +35,12 @@ export function MyShipmentsList() {
           className="sm:max-w-xs"
           aria-label="Search shipments"
         />
-        <select
-          className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+        <Select
+          label="Filter by status"
           value={params.status}
-          onChange={(e) =>
-            setParams({ status: e.target.value }, { resetPage: true })
-          }
-          aria-label="Filter by status"
-        >
-          {STATUSES.map((s) => (
-            <option key={s} value={s}>
-              {s ? s.replaceAll("_", " ") : "All statuses"}
-            </option>
-          ))}
-        </select>
+          onChange={(v) => setParams({ status: v }, { resetPage: true })}
+          options={SHIPMENT_STATUS_OPTIONS}
+        />
       </div>
 
       {isPending ? (

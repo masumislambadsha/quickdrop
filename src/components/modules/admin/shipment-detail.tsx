@@ -6,6 +6,7 @@ import { ShipmentDetail } from "@/components/modules/shipments/shipment-detail";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
 import { StatusBadge } from "@/components/ui/status-badge";
 import {
   useAllUsers,
@@ -91,20 +92,21 @@ export function AdminShipmentDetail({ id }: { id: string }) {
               <>
                 <div className="grid gap-1.5">
                   <Label>Available courier (by user account)</Label>
-                  <select
-                    className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                  <Select
+                    label="Available courier"
                     value={courierId}
-                    onChange={(e) => setCourierId(e.target.value)}
-                  >
-                    <option value="">Select courier...</option>
-                    {(couriers?.data ?? [])
-                      .filter((u) => u.status === "ACTIVE")
-                      .map((u) => (
-                        <option key={u.id} value={u.id}>
-                          {u.name} · {u.email}
-                        </option>
-                      ))}
-                  </select>
+                    onChange={setCourierId}
+                    options={[
+                      { value: "", label: "Select courier..." },
+                      ...(couriers?.data ?? [])
+                        .filter((u) => u.status === "ACTIVE")
+                        .map((u) => ({
+                          value: u.id,
+                          label: `${u.name} · ${u.email}`,
+                        })),
+                    ]}
+                    className="w-full justify-between"
+                  />
                 </div>
                 <Button onClick={onAssign} disabled={assignMutation.isPending}>
                   {assignMutation.isPending ? "Assigning..." : "Assign courier"}
@@ -121,17 +123,16 @@ export function AdminShipmentDetail({ id }: { id: string }) {
           <CardContent className="grid gap-3">
             <div className="grid gap-1.5">
               <Label>New status (current: {s.status})</Label>
-              <select
-                className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+              <Select
+                label="New status"
                 value={status}
-                onChange={(e) => setStatus(e.target.value as ShipmentStatus)}
-              >
-                {ALL_STATUSES.map((st) => (
-                  <option key={st} value={st}>
-                    {st.replaceAll("_", " ")}
-                  </option>
-                ))}
-              </select>
+                onChange={(v) => setStatus(v as ShipmentStatus)}
+                options={ALL_STATUSES.map((st) => ({
+                  value: st,
+                  label: st.replaceAll("_", " "),
+                }))}
+                className="w-full justify-between"
+              />
             </div>
             <Button
               variant="outline"

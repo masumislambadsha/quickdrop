@@ -1,6 +1,15 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import {
+  Banknote,
+  Bike,
+  Loader2,
+  Package,
+  PackageCheck,
+  Sparkles,
+  Users,
+  Wallet,
+} from "lucide-react";
 import {
   Bar,
   BarChart,
@@ -17,7 +26,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDashboardStats } from "@/hooks";
 import { getErrorMessage } from "@/lib/apiClient";
 
-const COLORS = ["#3b82f6", "#f59e0b", "#10b981", "#ef4444"];
+const COLORS = ["#7BCC00", "#FF9A3D", "#2D5C35"];
 
 export function AdminOverview() {
   const { data, isPending, isError, error } = useDashboardStats();
@@ -34,14 +43,26 @@ export function AdminOverview() {
 
   const s = data.data;
   const statCards = [
-    { label: "Total shipments", value: s.totalShipments },
-    { label: "Delivered", value: s.totalDeliveredShipments },
-    { label: "Total users", value: s.totalUsers },
-    { label: "Couriers", value: s.totalCouriers },
-    { label: "Paid payments", value: s.totalPayments },
-    { label: "Revenue", value: `$${s.totalRevenue.toFixed(2)}` },
-    { label: "New users (30d)", value: s.newUsersLast30Days },
-    { label: "New shipments (30d)", value: s.newShipmentsLast30Days },
+    { label: "Total shipments", value: s.totalShipments, icon: Package },
+    {
+      label: "Delivered",
+      value: s.totalDeliveredShipments,
+      icon: PackageCheck,
+    },
+    { label: "Total users", value: s.totalUsers, icon: Users },
+    { label: "Couriers", value: s.totalCouriers, icon: Bike },
+    { label: "Paid payments", value: s.totalPayments, icon: Wallet },
+    {
+      label: "Revenue",
+      value: `$${s.totalRevenue.toFixed(2)}`,
+      icon: Banknote,
+    },
+    { label: "New users (30d)", value: s.newUsersLast30Days, icon: Sparkles },
+    {
+      label: "New shipments (30d)",
+      value: s.newShipmentsLast30Days,
+      icon: Package,
+    },
   ];
 
   const shipmentData = [
@@ -58,38 +79,54 @@ export function AdminOverview() {
     <div className="grid gap-6">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {statCards.map((c) => (
-          <Card key={c.label}>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+          <Card key={c.label} className="card-float border-0">
+            <CardHeader className="flex flex-row items-center justify-between pb-1">
+              <CardTitle className="text-sm font-bold text-ink/60">
                 {c.label}
               </CardTitle>
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-mint text-forest">
+                <c.icon className="h-4 w-4" strokeWidth={2.5} />
+              </span>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold">{c.value}</p>
+              <p className="display text-4xl text-ink">{c.value}</p>
             </CardContent>
           </Card>
         ))}
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
+        <Card className="border-ink/10">
           <CardHeader>
-            <CardTitle>Shipments by status</CardTitle>
+            <CardTitle className="display text-xl text-ink">
+              Shipments by status
+            </CardTitle>
           </CardHeader>
           <CardContent className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={shipmentData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" fontSize={12} />
-                <YAxis fontSize={12} />
-                <Tooltip />
-                <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#0D1B0F22" />
+                <XAxis
+                  dataKey="name"
+                  fontSize={12}
+                  tick={{ fill: "#0D1B0F" }}
+                />
+                <YAxis fontSize={12} tick={{ fill: "#0D1B0F" }} />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: 16,
+                    border: "1px solid #0D1B0F22",
+                  }}
+                />
+                <Bar dataKey="value" fill="#2D5C35" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-ink/10">
           <CardHeader>
-            <CardTitle>Users by role</CardTitle>
+            <CardTitle className="display text-xl text-ink">
+              Users by role
+            </CardTitle>
           </CardHeader>
           <CardContent className="h-72">
             <ResponsiveContainer width="100%" height="100%">

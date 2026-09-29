@@ -1,7 +1,9 @@
 "use client";
 
 import { PaginationControls } from "@/components/modules/shipments/shipment-table";
+import { PAYMENT_STATUS_OPTIONS } from "@/components/modules/shipments/status-options";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Select } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/ui/status-badge";
 import {
@@ -26,23 +28,12 @@ export function AdminPayments() {
 
   return (
     <div className="grid gap-4">
-      <select
-        className="h-10 w-48 rounded-md border border-input bg-background px-3 text-sm"
+      <Select
+        label="Filter by payment status"
         value={params.status}
-        onChange={(e) =>
-          setParams({ status: e.target.value }, { resetPage: true })
-        }
-        aria-label="Filter by payment status"
-      >
-        <option value="">All statuses</option>
-        {["UNPAID", "PENDING", "PAID", "FAILED", "CANCELLED", "REFUNDED"].map(
-          (s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ),
-        )}
-      </select>
+        onChange={(v) => setParams({ status: v }, { resetPage: true })}
+        options={PAYMENT_STATUS_OPTIONS}
+      />
 
       {isPending ? (
         <div className="grid gap-2">

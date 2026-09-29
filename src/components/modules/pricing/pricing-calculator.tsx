@@ -73,7 +73,7 @@ export function PricingCalculator() {
           <Label htmlFor="calc-tier">Pricing tier</Label>
           <select
             id="calc-tier"
-            className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+            className="h-11 w-full rounded-full border-2 border-ink/15 bg-white px-4 text-sm font-semibold text-ink focus:border-leaf focus:outline-none"
             value={tier}
             onChange={(e) => setTier(e.target.value as PricingTier)}
           >
@@ -86,7 +86,7 @@ export function PricingCalculator() {
           <Label htmlFor="calc-type">Package type</Label>
           <select
             id="calc-type"
-            className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+            className="h-11 w-full rounded-full border-2 border-ink/15 bg-white px-4 text-sm font-semibold text-ink focus:border-leaf focus:outline-none"
             value={type}
             onChange={(e) => setType(e.target.value as PackageType)}
           >

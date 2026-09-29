@@ -1,7 +1,8 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { type Resolver, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -36,44 +37,33 @@ const registerSchema = z
     path: ["confirm"],
   });
 
+type RegisterValues = z.infer<typeof registerSchema>;
+
 export function RegisterForm() {
   const router = useRouter();
-  const { mutateAsync, isPending } = useRegister();
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirm: "",
+  const registerMutation = useRegister();
+
+  const form = useForm<RegisterValues>({
+    resolver: zodResolver(registerSchema) as Resolver<RegisterValues>,
+    defaultValues: { name: "", email: "", password: "", confirm: "" },
+    mode: "onTouched",
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const set =
-    (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
-      setForm((f) => ({ ...f, [key]: e.target.value }));
-
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const parsed = registerSchema.safeParse(form);
-    if (!parsed.success) {
-      const fieldErrors: Record<string, string> = {};
-      for (const issue of parsed.error.issues)
-        fieldErrors[String(issue.path[0])] = issue.message;
-      setErrors(fieldErrors);
-      return;
-    }
-    setErrors({});
+  const onSubmit = form.handleSubmit(async (values) => {
     try {
-      await mutateAsync({
-        name: parsed.data.name,
-        email: parsed.data.email,
-        password: parsed.data.password,
+      await registerMutation.mutateAsync({
+        name: values.name,
+        email: values.email,
+        password: values.password,
       });
       toast.success("Account created — welcome to QuickDrop.");
       router.replace("/dashboard");
     } catch (err) {
       toast.error(getErrorMessage(err, "Registration failed."));
     }
-  };
+  });
+
+  const e = form.formState.errors;
 
   return (
     <Card>
@@ -89,12 +79,12 @@ export function RegisterForm() {
             <Label htmlFor="name">Full name</Label>
             <Input
               id="name"
-              value={form.name}
-              onChange={set("name")}
               placeholder="Your name"
+              {...form.register("name")}
+              aria-invalid={!!e.name}
             />
-            {errors.name ? (
-              <p className="text-xs text-destructive">{errors.name}</p>
+            {e.name ? (
+              <p className="text-xs text-destructive">{e.name.message}</p>
             ) : null}
           </div>
           <div className="grid gap-1.5">
@@ -102,12 +92,12 @@ export function RegisterForm() {
             <Input
               id="email"
               type="email"
-              value={form.email}
-              onChange={set("email")}
               placeholder="you@example.com"
+              {...form.register("email")}
+              aria-invalid={!!e.email}
             />
-            {errors.email ? (
-              <p className="text-xs text-destructive">{errors.email}</p>
+            {e.email ? (
+              <p className="text-xs text-destructive">{e.email.message}</p>
             ) : null}
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -116,11 +106,11 @@ export function RegisterForm() {
               <Input
                 id="password"
                 type="password"
-                value={form.password}
-                onChange={set("password")}
+                {...form.register("password")}
+                aria-invalid={!!e.password}
               />
-              {errors.password ? (
-                <p className="text-xs text-destructive">{errors.password}</p>
+              {e.password ? (
+                <p className="text-xs text-destructive">{e.password.message}</p>
               ) : null}
             </div>
             <div className="grid gap-1.5">
@@ -128,16 +118,16 @@ export function RegisterForm() {
               <Input
                 id="confirm"
                 type="password"
-                value={form.confirm}
-                onChange={set("confirm")}
+                {...form.register("confirm")}
+                aria-invalid={!!e.confirm}
               />
-              {errors.confirm ? (
-                <p className="text-xs text-destructive">{errors.confirm}</p>
+              {e.confirm ? (
+                <p className="text-xs text-destructive">{e.confirm.message}</p>
               ) : null}
             </div>
           </div>
-          <Button type="submit" disabled={isPending}>
-            {isPending ? "Creating account..." : "Register"}
+          <Button type="submit" disabled={registerMutation.isPending}>
+            {registerMutation.isPending ? "Creating account..." : "Register"}
           </Button>
         </form>
       </CardContent>

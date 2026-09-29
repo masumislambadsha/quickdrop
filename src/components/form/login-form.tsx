@@ -1,8 +1,10 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { type Resolver, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -25,50 +27,55 @@ const loginSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
+type LoginValues = z.infer<typeof loginSchema>;
+
 function roleHome(role: string): string {
   if (role === "ADMIN") return "/admin";
   if (role === "COURIER") return "/courier";
   return "/dashboard";
 }
 
+const DEMOS = [
+  { role: "ADMIN" as const, label: "Admin", email: "admin@quickdrop.com" },
+  {
+    role: "CUSTOMER" as const,
+    label: "Customer",
+    email: "customer@quickdrop.com",
+  },
+  {
+    role: "COURIER" as const,
+    label: "Courier",
+    email: "courier@quickdrop.com",
+  },
+];
+
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
-  const { mutateAsync, isPending } = useLogin();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {},
-  );
+  const loginMutation = useLogin();
   const [demoRole, setDemoRole] = useState<string | null>(null);
+
+  const form = useForm<LoginValues>({
+    resolver: zodResolver(loginSchema) as Resolver<LoginValues>,
+    defaultValues: { email: "", password: "" },
+    mode: "onTouched",
+  });
 
   const afterLogin = (role: string) => {
     queryClient.invalidateQueries({ queryKey: ["me"] });
     router.replace(searchParams.get("next") ?? roleHome(role));
   };
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const parsed = loginSchema.safeParse({ email, password });
-    if (!parsed.success) {
-      const fieldErrors: typeof errors = {};
-      for (const issue of parsed.error.issues) {
-        if (issue.path[0] === "email") fieldErrors.email = issue.message;
-        if (issue.path[0] === "password") fieldErrors.password = issue.message;
-      }
-      setErrors(fieldErrors);
-      return;
-    }
-    setErrors({});
+  const onSubmit = form.handleSubmit(async (values) => {
     try {
-      const res = await mutateAsync(parsed.data);
+      const res = await loginMutation.mutateAsync(values);
       toast.success("Logged in successfully.");
       afterLogin(res.data.user.role);
     } catch (err) {
       toast.error(getErrorMessage(err, "Login failed."));
     }
-  };
+  });
 
   const onDemoLogin = async (role: "ADMIN" | "CUSTOMER" | "COURIER") => {
     setDemoRole(role);
@@ -85,6 +92,8 @@ export function LoginForm() {
       setDemoRole(null);
     }
   };
+
+  const e = form.formState.errors;
 
   return (
     <div className="grid gap-6">
@@ -103,12 +112,11 @@ export function LoginForm() {
                 id="email"
                 type="email"
                 placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                aria-invalid={!!errors.email}
+                {...form.register("email")}
+                aria-invalid={!!e.email}
               />
-              {errors.email ? (
-                <p className="text-xs text-destructive">{errors.email}</p>
+              {e.email ? (
+                <p className="text-xs text-destructive">{e.email.message}</p>
               ) : null}
             </div>
             <div className="grid gap-1.5">
@@ -116,16 +124,15 @@ export function LoginForm() {
               <Input
                 id="password"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                aria-invalid={!!errors.password}
+                {...form.register("password")}
+                aria-invalid={!!e.password}
               />
-              {errors.password ? (
-                <p className="text-xs text-destructive">{errors.password}</p>
+              {e.password ? (
+                <p className="text-xs text-destructive">{e.password.message}</p>
               ) : null}
             </div>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Logging in..." : "Login"}
+            <Button type="submit" disabled={loginMutation.isPending}>
+              {loginMutation.isPending ? "Logging in..." : "Login"}
             </Button>
           </form>
         </CardContent>
@@ -144,25 +151,9 @@ export function LoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-3 sm:grid-cols-3">
-          {[
-            {
-              role: "ADMIN" as const,
-              icon: "Admin",
-              email: "admin@quickdrop.com",
-            },
-            {
-              role: "CUSTOMER" as const,
-              icon: "Customer",
-              email: "customer@quickdrop.com",
-            },
-            {
-              role: "COURIER" as const,
-              icon: "Courier",
-              email: "courier@quickdrop.com",
-            },
-          ].map((d) => (
+          {DEMOS.map((d) => (
             <div key={d.role} className="rounded-lg border p-4 text-center">
-              <p className="font-semibold">{d.icon}</p>
+              <p className="font-semibold">{d.label}</p>
               <p className="mt-1 break-all text-xs text-muted-foreground">
                 {d.email}
               </p>

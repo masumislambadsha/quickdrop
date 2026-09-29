@@ -15,7 +15,6 @@ export function useGetMe(enabled = true) {
 }
 
 export function useLogin() {
-  const router = useRouter();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: login,
@@ -23,16 +22,11 @@ export function useLogin() {
       const { accessToken, refreshToken } = res.data;
       useAuthStore.getState().setTokens(accessToken, refreshToken);
       queryClient.invalidateQueries({ queryKey: ["me"] });
-      const role = res.data.user.role;
-      if (role === "ADMIN") router.replace("/admin");
-      else if (role === "COURIER") router.replace("/courier");
-      else router.replace("/dashboard");
     },
   });
 }
 
 export function useRegister() {
-  const router = useRouter();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: register,
@@ -40,7 +34,6 @@ export function useRegister() {
       const { accessToken, refreshToken } = res.data;
       useAuthStore.getState().setTokens(accessToken, refreshToken);
       queryClient.invalidateQueries({ queryKey: ["me"] });
-      router.replace("/dashboard");
     },
   });
 }

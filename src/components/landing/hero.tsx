@@ -84,6 +84,17 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden bg-ink">
+      <Image
+        src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=2000&q=80"
+        alt=""
+        aria-hidden
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/35" />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/60" />
       <div className="hero-grid absolute inset-0" />
       <Sticker
         icon={Star}

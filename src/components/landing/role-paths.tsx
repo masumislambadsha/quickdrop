@@ -110,7 +110,7 @@ const stories = [
 
 export function SuccessStats() {
   return (
-    <section className="bg-white pb-24 md:pb-28">
+    <section className="bg-cream pb-24 md:pb-28">
       <div className="mx-auto max-w-[1200px] px-6">
         <SectionHeading
           eyebrow="Proof, not promises"

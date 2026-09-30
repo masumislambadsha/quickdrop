@@ -6,7 +6,7 @@ import { PricingCalculator } from "@/components/modules/pricing/pricing-calculat
 
 export function PricingSection() {
   return (
-    <section className="relative overflow-hidden bg-cream py-24 md:py-28">
+    <section className="relative overflow-hidden bg-mint py-24 md:py-28">
       <Sticker
         icon={Package}
         index={1}

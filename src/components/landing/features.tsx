@@ -83,7 +83,7 @@ const cards = [
 
 export function Features() {
   return (
-    <section className="bg-cream py-24 md:py-28">
+    <section className="bg-white py-24 md:py-28">
       <div className="mx-auto max-w-[1200px] px-6">
         <SectionHeading
           eyebrow="What you get"

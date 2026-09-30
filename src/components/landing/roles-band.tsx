@@ -25,11 +25,10 @@ const roles = [
 
 export function RolesBand() {
   return (
-    <section className="relative overflow-hidden bg-ink py-24 md:py-28">
-      <div className="hero-grid absolute inset-0" />
+    <section className="relative overflow-hidden bg-cream py-24 md:py-28">
+      <div className="dot-grid absolute inset-0 opacity-60" />
       <div className="relative mx-auto max-w-[1200px] px-6">
         <SectionHeading
-          dark
           eyebrow="One platform"
           title="Three roles."
           highlight="Zero chaos."
@@ -37,14 +36,14 @@ export function RolesBand() {
           doodles={[
             {
               shape: "star",
-              color: "lime",
+              color: "orange",
               className: "-left-4 -top-6 rotate-12",
               delay: 0.4,
               size: 30,
             },
             {
               shape: "check",
-              color: "white",
+              color: "lime",
               className: "-right-2 top-0 -rotate-6",
               delay: 0,
               size: 26,
@@ -61,7 +60,7 @@ export function RolesBand() {
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {roles.map((r, i) => (
             <Reveal key={r.title} delay={i * 0.08}>
-              <div className="h-full rounded-[20px] border border-pine bg-pine/60 p-7">
+              <div className="h-full rounded-[20px] bg-ink p-7 shadow-[0_12px_32px_rgba(13,27,15,0.18)]">
                 <span className="flex h-12 w-12 items-center justify-center rounded-full bg-lime text-ink">
                   <r.icon className="h-6 w-6" strokeWidth={2.5} />
                 </span>

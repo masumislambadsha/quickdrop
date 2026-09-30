@@ -93,8 +93,8 @@ export function Hero() {
         sizes="100vw"
         className="object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/35" />
-      <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/60" />
+      <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/60 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/70" />
       <div className="hero-grid absolute inset-0" />
       <Sticker
         icon={Star}
@@ -212,23 +212,23 @@ export function Hero() {
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.15 }}
-          className="relative"
+          className="relative lg:h-[580px]"
         >
           <Image
             src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200&q=80"
             alt="Confident courier partner smiling"
             fill
             priority
-            sizes="(max-width: 1024px) 0, 45vw"
-            className="hero-photo-fade pointer-events-none absolute -right-6 top-1/2 hidden h-[115%] w-[62%] -translate-y-1/2 rounded-[20px] object-cover opacity-85 mix-blend-luminosity lg:block"
+            sizes="(max-width: 1024px) 0, 40vw"
+            className="hero-photo-fade pointer-events-none absolute inset-y-0 right-0 hidden w-[58%] rounded-[20px] object-cover object-top opacity-90 lg:block"
           />
-          <div className="relative z-10 lg:mr-[38%]">
+          <div className="relative z-10 lg:absolute lg:bottom-2 lg:left-0 lg:w-[66%]">
             <RouteVisual />
           </div>
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -left-4 -top-5 z-20 rounded-2xl bg-lime px-4 py-2.5 shadow-xl md:-left-8"
+            className="absolute -top-10 left-2 z-20 rounded-2xl bg-lime px-4 py-2.5 shadow-xl lg:-top-4 lg:right-6 lg:left-auto"
           >
             <p className="text-xs font-black uppercase tracking-wide text-ink">
               Delivered

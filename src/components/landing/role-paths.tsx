@@ -1,4 +1,5 @@
 import { ArrowRight, Bike, ClipboardList, LayoutDashboard } from "lucide-react";
+import Image from "next/image";
 import { Reveal } from "@/components/brand/reveal";
 import { SectionHeading } from "@/components/brand/section-heading";
 
@@ -83,31 +84,64 @@ export function RolePaths() {
   );
 }
 
-const stats = [
-  { value: "60K+", label: "parcels moved" },
-  { value: "98%", label: "on-time delivery" },
-  { value: "400+", label: "verified couriers" },
-  { value: "12", label: "cities served" },
+const stories = [
+  {
+    img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=800&q=80",
+    alt: "Happy customer receiving her parcel",
+    stat: "98%",
+    label: "on-time delivery",
+    caption: "Nusrat gets her craft supplies every week, right on schedule.",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80",
+    alt: "Business owner shipping with QuickDrop",
+    stat: "60K+",
+    label: "parcels moved",
+    caption: "Rahim ships his entire catalog through one dashboard.",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&q=80",
+    alt: "Courier partner smiling",
+    stat: "400+",
+    label: "verified couriers",
+    caption: "Sharmin rides the evening routes and tops the leaderboard.",
+  },
 ];
 
 export function SuccessStats() {
   return (
     <section className="bg-white pb-24 md:pb-28">
       <div className="mx-auto max-w-[1200px] px-6">
-        <Reveal>
-          <div className="grid grid-cols-2 gap-6 rounded-[20px] bg-ink p-8 md:grid-cols-4 md:p-10">
-            {stats.map((s) => (
-              <div key={s.label} className="text-center">
-                <p className="display display-on-dark text-4xl md:text-5xl">
-                  {s.value}
-                </p>
-                <p className="mt-1 text-sm font-semibold text-cream">
-                  {s.label}
+        <SectionHeading
+          eyebrow="Proof, not promises"
+          title="Stories of"
+          highlight="success."
+        />
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {stories.map((s, i) => (
+            <Reveal key={s.stat} delay={i * 0.08}>
+              <div className="card-float overflow-hidden">
+                <div className="relative h-64">
+                  <Image
+                    src={s.img}
+                    alt={s.alt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
+                  <div className="absolute bottom-4 left-4">
+                    <p className="display display-on-dark text-5xl">{s.stat}</p>
+                    <p className="text-sm font-bold text-cream">{s.label}</p>
+                  </div>
+                </div>
+                <p className="p-5 text-[15px] leading-relaxed text-[#444]">
+                  {s.caption}
                 </p>
               </div>
-            ))}
-          </div>
-        </Reveal>
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { useChangePassword, useGetMe, useUpdateMe } from "@/hooks";
 import { getErrorMessage } from "@/lib/apiClient";
 
@@ -154,7 +155,7 @@ export function ProfileForm() {
           <form onSubmit={onPassword} className="grid gap-4">
             <div className="grid gap-1.5">
               <Label>Old password</Label>
-              <Input type="password" {...password.register("oldPassword")} />
+              <PasswordInput {...password.register("oldPassword")} />
               {we.oldPassword ? (
                 <p className="text-xs text-destructive">
                   {we.oldPassword.message}
@@ -164,7 +165,7 @@ export function ProfileForm() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="grid gap-1.5">
                 <Label>New password</Label>
-                <Input type="password" {...password.register("newPassword")} />
+                <PasswordInput {...password.register("newPassword")} />
                 {we.newPassword ? (
                   <p className="text-xs text-destructive">
                     {we.newPassword.message}
@@ -173,7 +174,7 @@ export function ProfileForm() {
               </div>
               <div className="grid gap-1.5">
                 <Label>Confirm new password</Label>
-                <Input type="password" {...password.register("confirm")} />
+                <PasswordInput {...password.register("confirm")} />
                 {we.confirm ? (
                   <p className="text-xs text-destructive">
                     {we.confirm.message}

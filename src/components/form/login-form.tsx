@@ -17,8 +17,9 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { useLogin } from "@/hooks";
-import { demoLogin } from "@/hooks/auth.hook";
+import { demoLogin, seedMeCache } from "@/hooks/auth.hook";
 import { getErrorMessage } from "@/lib/apiClient";
 import { useAuthStore } from "@/store/auth.store";
 
@@ -84,6 +85,7 @@ export function LoginForm() {
       useAuthStore
         .getState()
         .setTokens(res.data.accessToken, res.data.refreshToken);
+      seedMeCache(queryClient, res.data.user);
       toast.success(`Logged in as ${role.toLowerCase()}.`);
       afterLogin(res.data.user.role);
     } catch (err) {
@@ -121,9 +123,8 @@ export function LoginForm() {
             </div>
             <div className="grid gap-1.5">
               <Label htmlFor="password">Password</Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 {...form.register("password")}
                 aria-invalid={!!e.password}
               />

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { useRegister } from "@/hooks";
 import { getErrorMessage } from "@/lib/apiClient";
 
@@ -39,6 +40,12 @@ const registerSchema = z
 
 type RegisterValues = z.infer<typeof registerSchema>;
 
+function roleHome(role: string): string {
+  if (role === "ADMIN") return "/admin";
+  if (role === "COURIER") return "/courier";
+  return "/dashboard";
+}
+
 export function RegisterForm() {
   const router = useRouter();
   const registerMutation = useRegister();
@@ -51,13 +58,15 @@ export function RegisterForm() {
 
   const onSubmit = form.handleSubmit(async (values) => {
     try {
-      await registerMutation.mutateAsync({
+      // useRegister's onSuccess already stored tokens and seeded the
+      // ["me"] cache, so the dashboard guard sees the new role instantly.
+      const res = await registerMutation.mutateAsync({
         name: values.name,
         email: values.email,
         password: values.password,
       });
       toast.success("Account created — welcome to QuickDrop.");
-      router.replace("/dashboard");
+      router.replace(roleHome(res.data.user.role));
     } catch (err) {
       toast.error(getErrorMessage(err, "Registration failed."));
     }
@@ -103,9 +112,8 @@ export function RegisterForm() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="grid gap-1.5">
               <Label htmlFor="password">Password</Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 {...form.register("password")}
                 aria-invalid={!!e.password}
               />
@@ -115,9 +123,8 @@ export function RegisterForm() {
             </div>
             <div className="grid gap-1.5">
               <Label htmlFor="confirm">Confirm password</Label>
-              <Input
+              <PasswordInput
                 id="confirm"
-                type="password"
                 {...form.register("confirm")}
                 aria-invalid={!!e.confirm}
               />

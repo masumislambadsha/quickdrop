@@ -7,15 +7,16 @@ import AuthLoading from "./auth-loading";
 
 export default function AuthGuard({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const { data, isPending, isError } = useGetMe();
+  const { data, isPending, isFetching, isError } = useGetMe();
   const user = data?.data;
 
   useEffect(() => {
-    if (isPending) return;
+    if (isPending || isFetching) return;
     if (isError || !user) router.replace("/login");
-  }, [isPending, isError, user, router]);
+  }, [isPending, isFetching, isError, user, router]);
 
   if (isPending) return <AuthLoading />;
+  if (isFetching && !user) return <AuthLoading />;
   if (isError || !user) return <AuthLoading label="Redirecting to login..." />;
   return <>{children}</>;
 }

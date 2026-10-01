@@ -20,10 +20,9 @@ export interface Payment {
 }
 
 export interface InitiatePaymentResponse {
-  id: string;
-  shipmentId: string;
-  amount: number;
-  currency: string;
+  paymentId: string;
+  stripeSessionUrl: string | null;
+  stripeSessionId?: string | null;
   status: PaymentStatus;
-  stripeSessionUrl: string;
+  message?: string;
 }

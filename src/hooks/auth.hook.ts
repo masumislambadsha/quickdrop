@@ -1,8 +1,19 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  type QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { changePassword, getMe, login, logout, register } from "@/api";
 import { useAuthStore } from "@/store/auth.store";
-import type { LoginPayload, RegisterPayload } from "@/types";
+import type {
+  ApiResponse,
+  AuthUser,
+  LoginPayload,
+  RegisterPayload,
+  UserProfile,
+} from "@/types";
 
 export function useGetMe(enabled = true) {
   return useQuery({
@@ -21,6 +32,9 @@ export function useLogin() {
     onSuccess: (res) => {
       const { accessToken, refreshToken } = res.data;
       useAuthStore.getState().setTokens(accessToken, refreshToken);
+      // Seed synchronously so guards see the new role instantly on
+      // navigation; the invalidation below then refreshes full profile data.
+      seedMeCache(queryClient, res.data.user);
       queryClient.invalidateQueries({ queryKey: ["me"] });
     },
   });
@@ -33,6 +47,7 @@ export function useRegister() {
     onSuccess: (res) => {
       const { accessToken, refreshToken } = res.data;
       useAuthStore.getState().setTokens(accessToken, refreshToken);
+      seedMeCache(queryClient, res.data.user);
       queryClient.invalidateQueries({ queryKey: ["me"] });
     },
   });
@@ -63,6 +78,30 @@ export function useLogout() {
 export function useChangePassword() {
   return useMutation({
     mutationFn: changePassword,
+  });
+}
+
+/**
+ * Synchronously seed the ["me"] cache from an auth response user, so that
+ * RoleGuard/AuthGuard render the correct state immediately after
+ * login/register/demo-login instead of flashing stale data while the
+ * background refetch is in flight. Nested profile fields from a previous
+ * fetch of the same user are preserved.
+ */
+export function seedMeCache(queryClient: QueryClient, user: AuthUser) {
+  queryClient.setQueryData<ApiResponse<UserProfile>>(["me"], (old) => {
+    const prev = old?.data;
+    const sameUser = prev?.id === user.id;
+    return {
+      success: true,
+      message: "",
+      data: {
+        ...user,
+        customer: sameUser ? (prev?.customer ?? null) : null,
+        courier: sameUser ? (prev?.courier ?? null) : null,
+      } as UserProfile,
+      meta: null,
+    };
   });
 }
 

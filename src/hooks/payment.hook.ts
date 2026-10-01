@@ -7,6 +7,7 @@ export function useInitiatePayment() {
     mutationFn: initiatePayment,
     onSuccess: (res) => {
       const url = res.data.stripeSessionUrl;
+      // A null URL means the shipment is already settled — nothing to pay.
       if (url) window.location.href = url;
     },
   });

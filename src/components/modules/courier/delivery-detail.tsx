@@ -24,7 +24,6 @@ const NEXT_STATUSES: DeliveryStatus[] = [
   "PICKED_UP",
   "IN_TRANSIT",
   "OUT_FOR_DELIVERY",
-  "DELIVERED",
   "FAILED",
 ];
 
@@ -172,7 +171,7 @@ export function DeliveryDetail({ id }: { id: string }) {
             </Card>
           ) : null}
 
-          {d.status === "DELIVERED" ? (
+          {d.status === "OUT_FOR_DELIVERY" ? (
             <Card>
               <CardHeader>
                 <CardTitle>Confirm delivery</CardTitle>
@@ -185,6 +184,10 @@ export function DeliveryDetail({ id }: { id: string }) {
                       {...confirmForm.register("code")}
                       placeholder="Code from recipient"
                     />
+                    <p className="text-xs text-muted-foreground">
+                      Final delivery needs the code from the recipient — the
+                      status dropdown cannot mark a delivery as delivered.
+                    </p>
                     {confirmForm.formState.errors.code ? (
                       <p className="text-xs text-destructive">
                         {confirmForm.formState.errors.code.message}

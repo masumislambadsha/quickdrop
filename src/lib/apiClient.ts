@@ -10,12 +10,28 @@ const raw = ofetch.create({
   credentials: "include",
 });
 
-let refreshPromise: Promise<boolean> | null = null;
+let refreshPromise: Promise<RefreshOutcome> | null = null;
 
-async function tryRefresh(): Promise<boolean> {
+/**
+ * - "refreshed": new tokens are in the store.
+ * - "unauthenticated": the backend rejected the refresh token. The only
+ *   case that may end the session.
+ * - "transient": the request never got a verdict (offline, DNS, 5xx, CORS
+ *   blip). Tokens are still perfectly valid and must be kept so a retry can
+ *   succeed. Treating this as a rejection silently logs the user out over a
+ *   momentary network problem.
+ */
+type RefreshOutcome = "refreshed" | "unauthenticated" | "transient";
+
+function isAuthRejection(error: unknown): boolean {
+  const status = statusOf(error);
+  return status === 400 || status === 401;
+}
+
+async function tryRefresh(): Promise<RefreshOutcome> {
   if (refreshPromise) return refreshPromise;
   const { refreshToken } = useAuthStore.getState();
-  if (!refreshToken) return false;
+  if (!refreshToken) return "unauthenticated";
 
   refreshPromise = (async () => {
     try {
@@ -28,11 +44,13 @@ async function tryRefresh(): Promise<boolean> {
       const nextRefresh = res?.data?.refreshToken;
       if (accessToken && nextRefresh) {
         useAuthStore.getState().setTokens(accessToken, nextRefresh);
-        return true;
+        return "refreshed" as const;
       }
-      return false;
-    } catch {
-      return false;
+      return "unauthenticated" as const;
+    } catch (error) {
+      return isAuthRejection(error)
+        ? ("unauthenticated" as const)
+        : ("transient" as const);
     } finally {
       refreshPromise = null;
     }
@@ -75,9 +93,11 @@ async function apiClient<T>(
     return await raw<T>(url, withAuth(options));
   } catch (error) {
     if (statusOf(error) !== 401 || isAuthEndpoint(url)) throw error;
-    const ok = await tryRefresh();
-    if (!ok) {
-      useAuthStore.getState().clear();
+    const outcome = await tryRefresh();
+    // Keep tokens on "transient" and let the caller retry; only a definitive
+    // rejection from the refresh endpoint ends the session.
+    if (outcome !== "refreshed") {
+      if (outcome === "unauthenticated") useAuthStore.getState().clear();
       throw error;
     }
     return raw<T>(url, withAuth(options));

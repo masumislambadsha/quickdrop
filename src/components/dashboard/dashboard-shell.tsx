@@ -20,6 +20,18 @@ export function DashboardShell({
   const { mutate: doLogout, isPending } = useLogout();
   const user = data?.data;
 
+  // Highlight only the most specific matching link. A naive "exact OR prefix"
+  // test marks every ancestor active at once, so /dashboard/shipments/new
+  // lights up both "My Shipments" and "New Shipment". Picking the longest
+  // match keeps parents active for detail pages (/shipments/<id>) while
+  // letting a nested link win on its own page.
+  const activeHref = links.reduce<string | null>((best, link) => {
+    const isMatch =
+      pathname === link.href || pathname.startsWith(`${link.href}/`);
+    if (!isMatch) return best;
+    return best === null || link.href.length > best.length ? link.href : best;
+  }, null);
+
   return (
     <div className="min-h-screen bg-cream md:grid md:grid-cols-[260px_1fr]">
       <aside className="bg-ink text-cream">
@@ -32,12 +44,7 @@ export function DashboardShell({
           </Link>
           <nav className="flex gap-1.5 overflow-x-auto md:flex-col">
             {links.map((l) => {
-              const active =
-                pathname === l.href ||
-                (l.href !== "/admin" &&
-                  l.href !== "/dashboard" &&
-                  l.href !== "/courier" &&
-                  pathname.startsWith(`${l.href}/`));
+              const active = l.href === activeHref;
               return (
                 <Link
                   key={l.href}

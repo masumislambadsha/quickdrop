@@ -15,11 +15,24 @@ import type {
   UserProfile,
 } from "@/types";
 
+function statusOf(error: unknown): number | null {
+  return (
+    (error as { response?: { status?: number } })?.response?.status ?? null
+  );
+}
+
 export function useGetMe(enabled = true) {
   return useQuery({
     queryKey: ["me"],
     queryFn: getMe,
-    retry: false,
+    // `retry: false` overrode the global `retry: 1`, so a single dropped
+    // request turned into a hard error that the guards read as "logged out".
+    // Retry transient failures, but never a definitive auth rejection.
+    retry: (failureCount, error) => {
+      const status = statusOf(error);
+      if (status === 401 || status === 403) return false;
+      return failureCount < 2;
+    },
     staleTime: 60_000,
     enabled,
   });

@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* HeroUI v3 — scoped to the components actually in use. The full
+   @heroui/styles entry re-imports tailwindcss, which would double-load it. */
+@import "@heroui/styles/utilities";
+@import "@heroui/styles/variants";
+@import "@heroui/styles/themes/default" layer(theme);
+@import "@heroui/styles/components/card.css" layer(components);
+@import "@heroui/styles/components/scroll-shadow.css" layer(components);
+
 :root {
   /* QuickDrop × Optimizely-2025 system */
   --ink: #0d1b0f;
@@ -73,6 +81,20 @@ body {
 ::selection {
   background: var(--lime);
   color: var(--ink);
+}
+
+/* HeroUI components read `text-foreground` / `text-muted`, which resolve to our
+   raw --foreground / --muted variables. Our --muted is a pale background tint,
+   not a text colour, so HeroUI descriptions inherited near-invisible text.
+   Scoped to the wrapper so bg-muted / border-muted elsewhere are untouched.
+
+   --muted is re-pointed at an AA-compliant grey-green (5.7:1 on white). The
+   global --muted-foreground is only 2.7:1 and fails WCAG AA; it is left alone
+   because it is used across the whole app, but new UI should not inherit it. */
+.hero-card-scope {
+  --muted: #5a6a5f;
+  --color-muted: #5a6a5f;
+  --color-foreground: var(--foreground);
 }
 
 /* ——— brand primitives ——— */

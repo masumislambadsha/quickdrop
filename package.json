@@ -10,6 +10,7 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@heroui/react": "^3.2.6",
     "@hookform/resolvers": "^5.9.1",
     "@radix-ui/react-dialog": "^1.1.23",
     "@radix-ui/react-select": "^2.3.7",

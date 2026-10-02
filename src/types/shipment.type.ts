@@ -70,6 +70,8 @@ export interface Shipment {
     paidAt?: string | null;
   }[];
   trackingEvents?: TrackingEvent[];
+  /** Handover code for final delivery. Only present for the owning customer/admin. */
+  deliveryCode?: string;
 }
 
 export interface CreateShipmentPayload {

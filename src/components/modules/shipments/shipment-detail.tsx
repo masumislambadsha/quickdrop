@@ -118,6 +118,18 @@ export function ShipmentDetail({
                 <dd className="text-lg font-bold">${s.cost.toFixed(2)}</dd>
               </div>
             </dl>
+            {s.deliveryCode ? (
+              <p className="mt-4 rounded-md bg-lime/25 p-3 text-sm">
+                Delivery code:{" "}
+                <strong className="font-mono text-base tracking-widest">
+                  {s.deliveryCode}
+                </strong>
+                <span className="mt-1 block text-xs text-muted-foreground">
+                  Share this code with your courier when your package arrives —
+                  they need it to mark the delivery complete.
+                </span>
+              </p>
+            ) : null}
             {s.delivery?.courier ? (
               <p className="mt-4 rounded-md bg-muted p-3 text-sm">
                 Courier: <strong>{s.delivery.courier.name}</strong>

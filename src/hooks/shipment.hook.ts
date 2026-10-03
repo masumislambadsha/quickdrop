@@ -1,5 +1,6 @@
 import {
   keepPreviousData,
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
@@ -30,6 +31,24 @@ export function useAllShipments(query: ShipmentListQuery) {
     queryKey: ["shipments", "all", query],
     queryFn: () => getShipments(query),
     placeholderData: keepPreviousData,
+  });
+}
+
+const ADMIN_DELIVERIES_LIMIT = 10;
+
+export function useAllShipmentsInfinite(
+  query: Omit<ShipmentListQuery, "page" | "cursor" | "limit"> = {},
+) {
+  return useInfiniteQuery({
+    queryKey: ["shipments", "all", "infinite", query],
+    queryFn: ({ pageParam }) =>
+      getShipments({
+        ...query,
+        limit: ADMIN_DELIVERIES_LIMIT,
+        ...(pageParam ? { cursor: pageParam as string } : {}),
+      }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.meta?.nextCursor ?? undefined,
   });
 }
 

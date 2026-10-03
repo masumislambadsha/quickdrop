@@ -39,4 +39,5 @@ export interface DeliveryListQuery {
   page?: number;
   limit?: number;
   status?: DeliveryStatus;
+  cursor?: string;
 }

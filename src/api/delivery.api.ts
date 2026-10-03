@@ -13,6 +13,7 @@ export function getMyDeliveries(query?: DeliveryListQuery) {
       ...(query?.page ? { page: query.page } : {}),
       ...(query?.limit ? { limit: query.limit } : {}),
       ...(query?.status ? { status: query.status } : {}),
+      ...(query?.cursor ? { cursor: query.cursor } : {}),
     },
   });
 }

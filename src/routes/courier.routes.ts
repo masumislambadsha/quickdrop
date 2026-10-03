@@ -1,5 +1,8 @@
-export const courierRoutes: { label: string; href: string }[] = [
-  { label: "My Tasks", href: "/courier" },
-  { label: "Earnings", href: "/courier/earnings" },
-  { label: "Profile", href: "/courier/profile" },
+import { Banknote, ClipboardList, User } from "lucide-react";
+import type { DashboardLink } from "./index";
+
+export const courierRoutes: DashboardLink[] = [
+  { label: "My Tasks", href: "/courier", icon: ClipboardList },
+  { label: "Earnings", href: "/courier/earnings", icon: Banknote },
+  { label: "Profile", href: "/courier/profile", icon: User },
 ];

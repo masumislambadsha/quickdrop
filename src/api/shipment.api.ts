@@ -13,6 +13,8 @@ function toQuery(query?: ShipmentListQuery): Record<string, string> {
   if (query.limit) params.limit = String(query.limit);
   if (query.search) params.search = query.search;
   if (query.status) params.status = query.status;
+  if (query.cursor) params.cursor = query.cursor;
+  if (query.hasDelivery) params.hasDelivery = "true";
   return params;
 }
 

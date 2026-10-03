@@ -5,6 +5,8 @@ export interface PaginationMeta {
   totalPages: number;
   hasNextPage: boolean;
   hasPrevPage: boolean;
+  nextCursor?: string | null;
+  hasMore?: boolean;
 }
 
 export interface ApiResponse<T> {

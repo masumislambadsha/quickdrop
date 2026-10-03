@@ -1,10 +1,12 @@
 "use client";
 
-import { LogOut, Package } from "lucide-react";
+import { LogOut, Menu, Package } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useGetMe, useLogout } from "@/hooks";
+import { useLogout } from "@/hooks";
 import { cn } from "@/lib/utils";
+import type { DashboardLink } from "@/routes";
+import { useSidebarStore } from "@/store/sidebar.store";
+import { Sidebar } from "./sidebar/sidebar";
 
 export function DashboardShell({
   title,
@@ -12,80 +14,53 @@ export function DashboardShell({
   children,
 }: {
   title: string;
-  links: { label: string; href: string }[];
+  links: DashboardLink[];
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-  const { data } = useGetMe();
+  const isOpen = useSidebarStore((s) => s.isOpen);
+  const toggle = useSidebarStore((s) => s.toggle);
   const { mutate: doLogout, isPending } = useLogout();
-  const user = data?.data;
-
-  // Highlight only the most specific matching link. A naive "exact OR prefix"
-  // test marks every ancestor active at once, so /dashboard/shipments/new
-  // lights up both "My Shipments" and "New Shipment". Picking the longest
-  // match keeps parents active for detail pages (/shipments/<id>) while
-  // letting a nested link win on its own page.
-  const activeHref = links.reduce<string | null>((best, link) => {
-    const isMatch =
-      pathname === link.href || pathname.startsWith(`${link.href}/`);
-    if (!isMatch) return best;
-    return best === null || link.href.length > best.length ? link.href : best;
-  }, null);
 
   return (
-    <div className="min-h-screen bg-cream md:grid md:grid-cols-[260px_1fr]">
-      <aside className="bg-ink text-cream">
-        <div className="flex items-center justify-between px-4 py-4 md:flex-col md:items-stretch md:gap-6 md:p-6 md:min-h-screen">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-lime text-ink">
-              <Package className="h-5 w-5" strokeWidth={2.5} />
-            </span>
-            <span className="display text-lg text-cream">QuickDrop</span>
-          </Link>
-          <nav className="flex gap-1.5 overflow-x-auto md:flex-col">
-            {links.map((l) => {
-              const active = l.href === activeHref;
-              return (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  className={cn(
-                    "whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold transition-all",
-                    active
-                      ? "bg-lime text-ink"
-                      : "text-cream/70 hover:bg-white/10 hover:text-cream",
-                  )}
-                >
-                  {l.label}
-                </Link>
-              );
-            })}
-          </nav>
-          <div className="hidden md:block border-t border-cream/10 pt-4 text-sm md:mt-auto">
-            <p className="truncate font-bold text-cream">{user?.name}</p>
-            <p className="truncate text-xs text-cream/50">{user?.email}</p>
-            <p className="pill-tag mt-2 bg-lime/15 text-lime">{user?.role}</p>
-            <button
-              type="button"
-              disabled={isPending}
-              onClick={() => doLogout()}
-              className="mt-3 inline-flex w-full items-center gap-2 rounded-full border border-cream/20 px-4 py-2 text-sm font-bold text-cream/80 transition-colors hover:border-lime hover:text-lime disabled:opacity-50 cursor-pointer"
-            >
-              <LogOut className="h-4 w-4" /> Logout
-            </button>
-          </div>
-          <button
-            type="button"
-            disabled={isPending}
-            onClick={() => doLogout()}
-            className="md:hidden rounded-full border border-cream/20 p-2 text-cream/80"
-            aria-label="Logout"
-          >
-            <LogOut className="h-4 w-4" />
-          </button>
-        </div>
-      </aside>
-      <div className="flex min-h-screen flex-col">
+    <div className="min-h-screen bg-cream">
+      <Sidebar links={links} />
+
+      {/* Mobile top bar — the sidebar is an overlay drawer below md. */}
+      <div className="sticky top-0 z-20 flex items-center gap-3 bg-cream/90 px-4 py-3 backdrop-blur md:hidden">
+        <button
+          type="button"
+          onClick={toggle}
+          aria-label="Open navigation menu"
+          aria-expanded={isOpen}
+          className="cursor-pointer rounded-full bg-ink p-2 text-cream outline-none focus-visible:ring-2 focus-visible:ring-forest"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+        <Link href="/" className="flex items-center gap-2">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-lime text-ink">
+            <Package className="h-4 w-4" strokeWidth={2.5} />
+          </span>
+          <span className="display text-base text-ink">QuickDrop</span>
+        </Link>
+        <span className="flex-1" />
+        <button
+          type="button"
+          disabled={isPending}
+          onClick={() => doLogout()}
+          aria-label="Logout"
+          className="cursor-pointer rounded-full border border-ink/15 p-2 text-ink/70 outline-none hover:border-ink/40 focus-visible:ring-2 focus-visible:ring-forest disabled:opacity-50"
+        >
+          <LogOut className="h-4 w-4" />
+        </button>
+      </div>
+
+      {/* Padded for the fixed rail/drawer on desktop. */}
+      <div
+        className={cn(
+          "flex min-h-screen flex-col transition-[padding] duration-300",
+          isOpen ? "md:pl-64" : "md:pl-16",
+        )}
+      >
         <div className="px-4 py-6 md:px-8">
           <h1 className="display text-3xl text-ink md:text-4xl">{title}</h1>
         </div>

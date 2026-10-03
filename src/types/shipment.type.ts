@@ -94,4 +94,6 @@ export interface ShipmentListQuery {
   limit?: number;
   search?: string;
   status?: ShipmentStatus;
+  cursor?: string;
+  hasDelivery?: boolean;
 }

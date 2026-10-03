@@ -267,6 +267,71 @@ h2 {
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 30%);
 }
 
+/* ——— QuickDrop loader: parcel riding its route ——— */
+
+@keyframes qd-ride {
+  from {
+    transform: translateX(0) rotate(-10deg);
+  }
+  to {
+    transform: translateX(var(--qd-travel, 136px)) rotate(10deg);
+  }
+}
+
+@keyframes qd-dash {
+  to {
+    background-position-x: 14px;
+  }
+}
+
+@keyframes qd-stop {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+.qd-parcel {
+  position: relative;
+  z-index: 1;
+  animation: qd-ride 1.4s ease-in-out infinite alternate;
+}
+
+.qd-route {
+  background-image: linear-gradient(90deg, currentColor 50%, transparent 50%);
+  background-size: 14px 2px;
+  background-repeat: repeat-x;
+  animation: qd-dash 0.7s linear infinite;
+}
+
+.qd-route-light {
+  color: var(--forest);
+  opacity: 0.45;
+}
+
+.qd-route-dark {
+  color: var(--lime);
+  opacity: 0.5;
+}
+
+.qd-stop {
+  background: var(--pop);
+  animation: qd-stop 1.05s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qd-parcel,
+  .qd-route,
+  .qd-stop {
+    animation: none;
+  }
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--forest) var(--cream);

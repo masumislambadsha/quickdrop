@@ -15,7 +15,7 @@ export default function GlobalError({
   }, [error]);
   return (
     <html lang="en">
-      <body className="flex min-h-screen flex-col items-center justify-center gap-4 p-8 text-center">
+      <body className="flex min-h-screen flex-col items-center justify-center gap-4 p-4 text-center sm:p-8">
         <h1 className="text-2xl font-bold">Something went wrong</h1>
         <p className="max-w-md text-sm text-muted-foreground">
           We hit an unexpected error. Please try again — your data is safe.

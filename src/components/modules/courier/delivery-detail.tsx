@@ -92,7 +92,7 @@ export function DeliveryDetail({ id }: { id: string }) {
           ← Back to tasks
         </Link>
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <h2 className="font-mono text-2xl font-bold">
+          <h2 className="min-w-0 font-mono text-xl break-all sm:text-2xl font-bold">
             {d.shipment?.trackingNumber ?? d.shipmentId}
           </h2>
           <StatusBadge status={d.status} />
@@ -106,28 +106,32 @@ export function DeliveryDetail({ id }: { id: string }) {
           </CardHeader>
           <CardContent>
             <dl className="grid gap-2 text-sm">
-              <div className="flex justify-between border-b pb-2">
-                <dt className="text-muted-foreground">Route</dt>
-                <dd className="font-medium">
+              <div className="flex flex-col gap-0.5 border-b pb-2 sm:flex-row sm:justify-between sm:gap-3">
+                <dt className="shrink-0 text-muted-foreground">Route</dt>
+                <dd className="min-w-0 font-medium break-words sm:text-right">
                   {d.shipment?.origin} → {d.shipment?.destination}
                 </dd>
               </div>
-              <div className="flex justify-between border-b pb-2">
-                <dt className="text-muted-foreground">Recipient</dt>
-                <dd className="font-medium">
+              <div className="flex flex-col gap-0.5 border-b pb-2 sm:flex-row sm:justify-between sm:gap-3">
+                <dt className="shrink-0 text-muted-foreground">Recipient</dt>
+                <dd className="min-w-0 font-medium break-words sm:text-right">
                   {d.shipment?.recipientName} · {d.shipment?.recipientPhone}
                 </dd>
               </div>
-              <div className="flex justify-between border-b pb-2">
-                <dt className="text-muted-foreground">Assigned</dt>
-                <dd className="font-medium">
+              <div className="flex flex-col gap-0.5 border-b pb-2 sm:flex-row sm:justify-between sm:gap-3">
+                <dt className="shrink-0 text-muted-foreground">Assigned</dt>
+                <dd className="min-w-0 font-medium break-words sm:text-right">
                   {new Date(d.assignedAt).toLocaleString()}
                 </dd>
               </div>
               {d.failedReason ? (
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Failed reason</dt>
-                  <dd className="font-medium">{d.failedReason}</dd>
+                <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-3">
+                  <dt className="shrink-0 text-muted-foreground">
+                    Failed reason
+                  </dt>
+                  <dd className="min-w-0 font-medium break-words sm:text-right">
+                    {d.failedReason}
+                  </dd>
                 </div>
               ) : null}
             </dl>

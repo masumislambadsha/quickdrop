@@ -49,8 +49,8 @@ const services = [
 
 export default function ServicesPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-16">
-      <h1 className="text-3xl font-bold md:text-4xl">Services</h1>
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:py-16">
+      <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl">Services</h1>
       <p className="mt-3 max-w-2xl text-muted-foreground">
         Five package categories, three speed tiers. Every booking gets a
         tracking number, a milestone timeline, and a Stripe-secured payment.

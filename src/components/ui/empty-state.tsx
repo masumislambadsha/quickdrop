@@ -10,13 +10,17 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed py-16 text-center">
-      <PackageSearch className="h-10 w-10 text-muted-foreground" />
-      <h3 className="text-lg font-semibold">{title}</h3>
+    <div className="flex min-w-0 flex-col items-center justify-center gap-3 rounded-lg border border-dashed px-4 py-10 text-center sm:py-16">
+      <PackageSearch className="h-10 w-10 shrink-0 text-muted-foreground" />
+      <h3 className="break-words text-lg font-semibold">{title}</h3>
       {description ? (
-        <p className="max-w-sm text-sm text-muted-foreground">{description}</p>
+        <p className="w-full max-w-sm break-words text-sm text-muted-foreground">
+          {description}
+        </p>
       ) : null}
-      {action}
+      {action ? (
+        <div className="mt-1 flex w-full justify-center">{action}</div>
+      ) : null}
     </div>
   );
 }

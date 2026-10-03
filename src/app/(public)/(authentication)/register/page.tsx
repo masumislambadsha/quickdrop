@@ -14,7 +14,9 @@ export const metadata: Metadata = {
 export default function RegisterPage() {
   return (
     <div className="mx-auto w-full max-w-xl px-4 py-12">
-      <h1 className="text-center text-3xl font-bold">Create your account</h1>
+      <h1 className="text-center text-2xl font-bold break-words sm:text-3xl">
+        Create your account
+      </h1>
       <p className="mt-2 text-center text-sm text-muted-foreground">
         Already registered?{" "}
         <Link

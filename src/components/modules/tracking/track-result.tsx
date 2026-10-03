@@ -10,27 +10,36 @@ export function TrackResult({ trackingNumber }: { trackingNumber: string }) {
 
   if (isPending) {
     return (
-      <div className="flex items-center gap-2 rounded-lg border p-6 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" /> Looking up {trackingNumber}
-        ...
+      <div className="flex min-w-0 items-center gap-2 rounded-lg border p-4 text-sm break-words text-muted-foreground sm:p-6">
+        <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
+        <span className="min-w-0 break-all">
+          Looking up {trackingNumber} ...
+        </span>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="flex items-center gap-2 rounded-lg border border-destructive/40 bg-destructive/5 p-6 text-sm">
-        <CircleAlert className="h-4 w-4 text-destructive" />
-        {getErrorMessage(error, "No shipment found with this tracking number.")}
+      <div className="flex min-w-0 items-start gap-2 rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm break-words sm:p-6">
+        <CircleAlert className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+        <span className="min-w-0">
+          {getErrorMessage(
+            error,
+            "No shipment found with this tracking number.",
+          )}
+        </span>
       </div>
     );
   }
 
   const shipment = data.data;
   return (
-    <div className="rounded-lg border p-6">
+    <div className="min-w-0 rounded-lg border p-4 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="font-mono font-bold">{shipment.trackingNumber}</h2>
+        <h2 className="min-w-0 font-mono font-bold break-all">
+          {shipment.trackingNumber}
+        </h2>
         <StatusBadge status={shipment.status} />
       </div>
       <p className="mt-2 text-sm text-muted-foreground">

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function PaymentSuccessPage() {
   return (
-    <div className="mx-auto max-w-xl px-4 py-16 text-center">
+    <div className="mx-auto max-w-xl px-4 py-10 text-center sm:py-16">
       <Suspense
         fallback={
           <p className="text-sm text-muted-foreground">Confirming payment...</p>

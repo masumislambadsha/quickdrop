@@ -14,7 +14,9 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <div className="mx-auto w-full max-w-xl px-4 py-12">
-      <h1 className="text-center text-3xl font-bold">Welcome back</h1>
+      <h1 className="text-center text-2xl font-bold sm:text-3xl">
+        Welcome back
+      </h1>
       <p className="mt-2 text-center text-sm text-muted-foreground">
         No account yet?{" "}
         <Link

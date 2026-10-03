@@ -114,7 +114,7 @@ export function Features() {
             },
           ]}
         />
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map((c, i) => (
             <Reveal key={c.title} delay={i * 0.08}>
               <div className="card-float h-full p-6">

@@ -8,8 +8,10 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-16">
-      <h1 className="text-3xl font-bold md:text-4xl">About QuickDrop</h1>
+    <div className="mx-auto max-w-4xl px-4 py-10 sm:py-16">
+      <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl">
+        About QuickDrop
+      </h1>
       <p className="mt-4 text-muted-foreground">
         QuickDrop is a courier and logistics platform that connects customers
         who need parcels moved with verified couriers — under the supervision of
@@ -17,7 +19,7 @@ export default function AboutPage() {
         requested, picked up, in transit, out for delivery, and delivered, with
         failed and cancelled paths fully audited.
       </p>
-      <div className="mt-8 grid gap-6 md:grid-cols-3">
+      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-lg border p-6">
           <h2 className="font-semibold">For customers</h2>
           <p className="mt-2 text-sm text-muted-foreground">

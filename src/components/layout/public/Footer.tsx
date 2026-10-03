@@ -46,7 +46,7 @@ export function Footer() {
             operations teams. Ship anything. Track everything.
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 min-[420px]:grid-cols-2 sm:grid-cols-3">
           {cols.map((c) => (
             <div key={c.title}>
               <p className="pill-tag bg-lime/15 text-lime">{c.title}</p>

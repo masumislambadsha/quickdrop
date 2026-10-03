@@ -239,7 +239,7 @@ export function ShipmentWizard() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Package type" error={e.packageType?.message}>
                   <select
-                    className="h-11 w-full rounded-full border-2 border-ink/15 bg-white px-4 text-sm font-semibold text-ink focus:border-leaf focus:outline-none"
+                    className="h-11 w-full min-w-0 rounded-full border-2 border-ink/15 bg-white px-4 text-base font-semibold text-ink focus:border-leaf focus:outline-none sm:text-sm"
                     {...form.register("packageType")}
                   >
                     <option value="DOCUMENT">Document</option>
@@ -251,7 +251,7 @@ export function ShipmentWizard() {
                 </Field>
                 <Field label="Speed tier" error={e.pricingTier?.message}>
                   <select
-                    className="h-11 w-full rounded-full border-2 border-ink/15 bg-white px-4 text-sm font-semibold text-ink focus:border-leaf focus:outline-none"
+                    className="h-11 w-full min-w-0 rounded-full border-2 border-ink/15 bg-white px-4 text-base font-semibold text-ink focus:border-leaf focus:outline-none sm:text-sm"
                     {...form.register("pricingTier")}
                   >
                     <option value="STANDARD">Standard</option>
@@ -283,28 +283,30 @@ export function ShipmentWizard() {
 
           {step === 3 && (
             <>
-              <dl className="grid gap-2 rounded-md border p-4 text-sm">
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">From</dt>
-                  <dd className="font-medium">
+              <dl className="grid min-w-0 gap-2 rounded-md border p-4 text-sm">
+                <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-3">
+                  <dt className="shrink-0 text-muted-foreground">From</dt>
+                  <dd className="min-w-0 font-medium break-words sm:text-right">
                     {form.watch("senderName")} · {form.watch("origin")}
                   </dd>
                 </div>
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">To</dt>
-                  <dd className="font-medium">
+                <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-3">
+                  <dt className="shrink-0 text-muted-foreground">To</dt>
+                  <dd className="min-w-0 font-medium break-words sm:text-right">
                     {form.watch("recipientName")} · {form.watch("destination")}
                   </dd>
                 </div>
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Parcel</dt>
-                  <dd className="font-medium">
+                <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-3">
+                  <dt className="shrink-0 text-muted-foreground">Parcel</dt>
+                  <dd className="min-w-0 font-medium break-words sm:text-right">
                     {form.watch("weightKg")} kg · {form.watch("packageType")}
                   </dd>
                 </div>
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Tier</dt>
-                  <dd className="font-medium">{form.watch("pricingTier")}</dd>
+                <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-3">
+                  <dt className="shrink-0 text-muted-foreground">Tier</dt>
+                  <dd className="min-w-0 font-medium break-words sm:text-right">
+                    {form.watch("pricingTier")}
+                  </dd>
                 </div>
               </dl>
               <label className="flex items-center gap-2 text-sm">
@@ -319,21 +321,26 @@ export function ShipmentWizard() {
             </>
           )}
 
-          <div className="flex justify-between pt-2">
+          <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-between">
             <Button
               type="button"
               variant="outline"
               disabled={step === 1 || busy}
               onClick={() => setStep((s) => s - 1)}
+              className="w-full sm:w-auto"
             >
               Back
             </Button>
             {step < 3 ? (
-              <Button type="button" onClick={next}>
+              <Button type="button" onClick={next} className="w-full sm:w-auto">
                 Continue
               </Button>
             ) : (
-              <Button type="submit" disabled={busy}>
+              <Button
+                type="submit"
+                disabled={busy}
+                className="w-full sm:w-auto"
+              >
                 {busy
                   ? "Processing..."
                   : payNow

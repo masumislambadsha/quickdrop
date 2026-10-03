@@ -55,7 +55,7 @@ export function RolePaths() {
             },
           ]}
         />
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {paths.map((p, i) => (
             <Reveal key={p.title} delay={i * 0.08}>
               <div className="card-float h-full border-2 border-mint p-7">
@@ -117,7 +117,7 @@ export function SuccessStats() {
           title="Stories of"
           highlight="success."
         />
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {stories.map((s, i) => (
             <Reveal key={s.stat} delay={i * 0.08}>
               <div className="card-float overflow-hidden">

@@ -6,13 +6,13 @@ export function EventBanner() {
     <section className="bg-ink pb-4">
       <div className="mx-auto max-w-[1200px] px-6">
         <Reveal>
-          <div className="flex flex-col items-center justify-between gap-4 rounded-[20px] bg-pop p-6 text-ink md:flex-row md:p-7">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col items-center justify-between gap-4 rounded-[20px] bg-pop p-5 text-ink sm:p-6 md:flex-row md:p-7">
+            <div className="flex w-full min-w-0 items-center gap-4">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-ink text-lime">
                 <Zap className="h-6 w-6" strokeWidth={2.5} />
               </span>
-              <div>
-                <p className="display text-2xl md:text-3xl">
+              <div className="min-w-0">
+                <p className="display text-xl sm:text-2xl md:text-3xl">
                   Same-Day is live in Dhaka.
                 </p>
                 <p className="mt-1 text-sm font-medium text-ink/70">
@@ -23,7 +23,7 @@ export function EventBanner() {
             </div>
             <a
               href="/dashboard/shipments/new"
-              className="shrink-0 rounded-full bg-ink px-6 py-3 text-sm font-bold text-lime transition-transform hover:scale-[1.02]"
+              className="w-full shrink-0 rounded-full bg-ink px-6 py-3 text-center text-sm font-bold text-lime transition-transform hover:scale-[1.02] md:w-auto"
             >
               Try Same-Day
             </a>

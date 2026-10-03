@@ -20,7 +20,7 @@ export function DataTableShell({
   return (
     <Card
       className={cn(
-        "w-full min-w-0 max-w-full gap-1 rounded-[20px] border-0 bg-[#eceef1] p-1.5 shadow-none sm:p-2",
+        "w-full min-w-0 max-w-full gap-1 overflow-hidden rounded-[20px] border-0 bg-[#eceef1] p-1.5 shadow-none sm:p-2",
         className,
       )}
     >
@@ -124,7 +124,7 @@ export function DataTableFooter({
   endText?: string;
 }) {
   return (
-    <div className="flex items-center justify-between gap-3 pt-1">
+    <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 pt-1">
       <p className="text-sm text-slate-500">
         Showing {shown}
         {total != null ? ` of ${total}` : ""}

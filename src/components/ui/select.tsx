@@ -22,7 +22,7 @@ export function Select({
       <SelectPrimitive.Trigger
         aria-label={label}
         className={cn(
-          "inline-flex h-10 items-center justify-between gap-2 rounded-full border-2 border-ink/15 bg-white px-4 text-sm font-semibold text-ink hover:border-ink/40 focus:outline-none cursor-pointer",
+          "inline-flex h-10 w-full min-w-0 max-w-full items-center justify-between gap-2 rounded-full border-2 border-ink/15 bg-white px-4 text-sm font-semibold text-ink hover:border-ink/40 focus:outline-none cursor-pointer [&>span]:min-w-0 [&>span]:flex-1 [&>span]:truncate",
           className,
         )}
       >
@@ -34,9 +34,9 @@ export function Select({
       <SelectPrimitive.Portal>
         <SelectPrimitive.Content
           position="popper"
-          className="z-50 min-w-44 overflow-hidden rounded-2xl border border-ink/10 bg-white p-1.5 shadow-xl"
+          className="z-50 max-w-[calc(100vw-2rem)] min-w-44 overflow-hidden rounded-2xl border border-ink/10 bg-white p-1.5 shadow-xl"
         >
-          <SelectPrimitive.Viewport>
+          <SelectPrimitive.Viewport className="max-h-[50vh] overflow-y-auto">
             {options.map((o) => (
               <SelectPrimitive.Item
                 key={o.value}

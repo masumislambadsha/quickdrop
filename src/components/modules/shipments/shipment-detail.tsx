@@ -72,7 +72,9 @@ export function ShipmentDetail({
           ← Back to list
         </a>
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          <h2 className="font-mono text-2xl font-bold">{s.trackingNumber}</h2>
+          <h2 className="min-w-0 font-mono text-xl break-all sm:text-2xl">
+            {s.trackingNumber}
+          </h2>
           <StatusBadge status={s.status} />
           <StatusBadge status={s.paymentStatus} />
         </div>
@@ -85,37 +87,41 @@ export function ShipmentDetail({
           </CardHeader>
           <CardContent>
             <dl className="grid gap-2 text-sm">
-              <div className="flex justify-between border-b pb-2">
-                <dt className="text-muted-foreground">Route</dt>
-                <dd className="font-medium">
+              <div className="flex flex-col gap-0.5 border-b pb-2 sm:flex-row sm:justify-between sm:gap-3">
+                <dt className="shrink-0 text-muted-foreground">Route</dt>
+                <dd className="min-w-0 font-medium break-words sm:text-right">
                   {s.origin} → {s.destination}
                 </dd>
               </div>
-              <div className="flex justify-between border-b pb-2">
-                <dt className="text-muted-foreground">Sender</dt>
-                <dd className="font-medium">
+              <div className="flex flex-col gap-0.5 border-b pb-2 sm:flex-row sm:justify-between sm:gap-3">
+                <dt className="shrink-0 text-muted-foreground">Sender</dt>
+                <dd className="min-w-0 font-medium break-words sm:text-right">
                   {s.senderName} · {s.senderPhone}
                 </dd>
               </div>
-              <div className="flex justify-between border-b pb-2">
-                <dt className="text-muted-foreground">Recipient</dt>
-                <dd className="font-medium">
+              <div className="flex flex-col gap-0.5 border-b pb-2 sm:flex-row sm:justify-between sm:gap-3">
+                <dt className="shrink-0 text-muted-foreground">Recipient</dt>
+                <dd className="min-w-0 font-medium break-words sm:text-right">
                   {s.recipientName} · {s.recipientPhone}
                 </dd>
               </div>
-              <div className="flex justify-between border-b pb-2">
-                <dt className="text-muted-foreground">Parcel</dt>
-                <dd className="font-medium">
+              <div className="flex flex-col gap-0.5 border-b pb-2 sm:flex-row sm:justify-between sm:gap-3">
+                <dt className="shrink-0 text-muted-foreground">Parcel</dt>
+                <dd className="min-w-0 font-medium break-words sm:text-right">
                   {s.weightKg} kg · {s.packageType} · {s.pricingTier}
                 </dd>
               </div>
-              <div className="flex justify-between border-b pb-2">
-                <dt className="text-muted-foreground">Distance</dt>
-                <dd className="font-medium">{s.distanceKm} km</dd>
+              <div className="flex flex-col gap-0.5 border-b pb-2 sm:flex-row sm:justify-between sm:gap-3">
+                <dt className="shrink-0 text-muted-foreground">Distance</dt>
+                <dd className="min-w-0 font-medium break-words sm:text-right">
+                  {s.distanceKm} km
+                </dd>
               </div>
-              <div className="flex justify-between">
-                <dt className="text-muted-foreground">Cost</dt>
-                <dd className="text-lg font-bold">${s.cost.toFixed(2)}</dd>
+              <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-3">
+                <dt className="shrink-0 text-muted-foreground">Cost</dt>
+                <dd className="text-lg font-bold break-words sm:text-right">
+                  ${s.cost.toFixed(2)}
+                </dd>
               </div>
             </dl>
             {s.deliveryCode ? (

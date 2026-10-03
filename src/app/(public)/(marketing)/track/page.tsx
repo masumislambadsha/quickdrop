@@ -12,8 +12,10 @@ export default async function TrackPage({ searchParams }: PageProps<"/track">) {
   const params = await searchParams;
   const tn = typeof params.tn === "string" ? params.tn : "";
   return (
-    <div className="mx-auto max-w-2xl px-4 py-16">
-      <h1 className="text-3xl font-bold">Track your parcel</h1>
+    <div className="mx-auto max-w-2xl px-4 py-10 sm:py-16">
+      <h1 className="text-2xl font-bold break-words sm:text-3xl">
+        Track your parcel
+      </h1>
       <p className="mt-2 text-sm text-muted-foreground">
         Enter the tracking number from your booking confirmation. No login
         required.

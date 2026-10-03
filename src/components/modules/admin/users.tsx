@@ -165,7 +165,7 @@ export function AdminUsers() {
                         {u.status}
                       </span>
                     </div>
-                    <div className="flex min-w-0 gap-2 sm:justify-self-end">
+                    <div className="flex min-w-0 flex-wrap gap-2 sm:justify-self-end">
                       <button
                         type="button"
                         onClick={() => openRole(u)}
@@ -224,7 +224,7 @@ export function AdminUsers() {
             options={ROLE_DIALOG_OPTIONS}
             className="w-full justify-between"
           />
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={() => setRoleTarget(null)}
@@ -258,7 +258,7 @@ export function AdminUsers() {
             : undefined
         }
       >
-        <div className="flex justify-end gap-2">
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <button
             type="button"
             onClick={() => setStatusTarget(null)}

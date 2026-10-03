@@ -97,17 +97,17 @@ export function CustomerOverview() {
             <Link
               key={s.id}
               href={`/dashboard/shipments/${s.id}`}
-              className="flex items-center justify-between rounded-2xl border border-ink/10 p-3 transition-colors hover:bg-cream"
+              className="flex min-w-0 items-center justify-between gap-3 rounded-2xl border border-ink/10 p-3 transition-colors hover:bg-cream"
             >
-              <div>
-                <p className="font-mono text-sm font-bold text-ink">
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-mono text-sm font-bold text-ink">
                   {s.trackingNumber}
                 </p>
-                <p className="text-xs text-ink/50">
+                <p className="truncate text-xs text-ink/50">
                   {s.origin} → {s.destination}
                 </p>
               </div>
-              <StatusBadge status={s.status} />
+              <StatusBadge status={s.status} className="shrink-0" />
             </Link>
           ))}
         </CardContent>

@@ -26,13 +26,13 @@ export function Dialog({
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-ink/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=open]:fade-in-0" />
         <DialogPrimitive.Content
           className={cn(
-            "fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 rounded-[20px] bg-white p-6 shadow-2xl",
+            "fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[20px] bg-white p-4 shadow-2xl sm:p-6",
             wide ? "max-w-lg" : "max-w-md",
           )}
         >
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <DialogPrimitive.Title className="display text-2xl text-ink">
+          <div className="flex min-w-0 items-start justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <DialogPrimitive.Title className="display min-w-0 break-words text-xl text-ink sm:text-2xl">
                 {title}
               </DialogPrimitive.Title>
               {description ? (
@@ -43,12 +43,12 @@ export function Dialog({
             </div>
             <DialogPrimitive.Close
               aria-label="Close"
-              className="rounded-full p-1.5 hover:bg-cream cursor-pointer"
+              className="shrink-0 rounded-full p-1.5 hover:bg-cream cursor-pointer"
             >
               <X className="h-5 w-5" />
             </DialogPrimitive.Close>
           </div>
-          <div className="mt-5">{children}</div>
+          <div className="mt-5 min-w-0">{children}</div>
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>

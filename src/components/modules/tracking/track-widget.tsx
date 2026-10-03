@@ -10,7 +10,7 @@ export function TrackWidget() {
   const [tn, setTn] = useState("");
   return (
     <form
-      className="flex gap-2"
+      className="flex flex-col gap-2 sm:flex-row"
       onSubmit={(e) => {
         e.preventDefault();
         if (tn.trim())
@@ -22,8 +22,11 @@ export function TrackWidget() {
         value={tn}
         onChange={(e) => setTn(e.target.value)}
         aria-label="Tracking number"
+        className="min-w-0 flex-1"
       />
-      <Button type="submit">Track</Button>
+      <Button type="submit" className="w-full shrink-0 sm:w-auto">
+        Track
+      </Button>
     </form>
   );
 }

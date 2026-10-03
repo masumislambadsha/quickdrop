@@ -1,21 +1,33 @@
 "use client";
 
-import { Card, ScrollShadow } from "@heroui/react";
-import { PaginationControls } from "@/components/modules/shipments/shipment-table";
+import {
+  DataTableBody,
+  DataTableFooter,
+  DataTableHeader,
+  DataTableRow,
+  DataTableRows,
+  DataTableShell,
+} from "@/components/ui/data-table";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { useListParams, useMyShipments } from "@/hooks";
+import { useMyShipmentsInfinite } from "@/hooks";
 import { getErrorMessage } from "@/lib/apiClient";
 
-export function CustomerPayments() {
-  const { params, setParams } = useListParams();
-  const { data, isPending, isError, error } = useMyShipments({
-    page: params.page,
-    limit: 10,
-  });
+export const PAYMENTS_GRID = "sm:grid-cols-[150px_minmax(0,1fr)_auto_auto]";
 
-  if (isPending) {
+export function CustomerPayments() {
+  const history = useMyShipmentsInfinite();
+
+  const paid = (history.data?.pages.flatMap((p) => p.data) ?? []).flatMap((s) =>
+    (s.payments ?? []).map((p) => ({
+      ...p,
+      trackingNumber: s.trackingNumber,
+      shipmentId: s.id,
+    })),
+  );
+
+  if (history.isPending) {
     return (
       <div className="grid gap-2">
         {["sk-1", "sk-2", "sk-3", "sk-4", "sk-5", "sk-6", "sk-7", "sk-8"]
@@ -27,20 +39,12 @@ export function CustomerPayments() {
     );
   }
 
-  if (isError)
+  if (history.isError)
     return (
       <p className="text-sm text-destructive">
-        {getErrorMessage(error, "Failed to load payments.")}
+        {getErrorMessage(history.error, "Failed to load payments.")}
       </p>
     );
-
-  const paid = (data.data ?? []).flatMap((s) =>
-    (s.payments ?? []).map((p) => ({
-      ...p,
-      trackingNumber: s.trackingNumber,
-      shipmentId: s.id,
-    })),
-  );
 
   if (paid.length === 0)
     return (
@@ -52,46 +56,56 @@ export function CustomerPayments() {
 
   return (
     <>
-      <Card className="hero-card-scope w-full p-0">
-        <ScrollShadow
-          className="max-h-[520px] p-4"
-          orientation="vertical"
-          hideScrollBar
-        >
-          <div className="space-y-3">
+      <DataTableShell>
+        <DataTableHeader
+          gridClass={PAYMENTS_GRID}
+          columns={[
+            { label: "Shipment" },
+            { label: "Paid" },
+            { label: "Status", className: "sm:justify-self-end" },
+            { label: "Amount", className: "sm:text-right" },
+          ]}
+        />
+        <DataTableBody>
+          <DataTableRows>
             {paid.map((p) => (
-              <Card
-                key={p.id}
-                variant="transparent"
-                className="flex-row items-center justify-between gap-4 border border-border bg-card p-3"
-              >
+              <DataTableRow key={p.id} gridClass={PAYMENTS_GRID}>
                 <div className="min-w-0">
-                  <Card.Title className="font-mono font-semibold">
+                  <p className="truncate font-mono text-[15px] font-medium text-slate-900">
                     {p.trackingNumber}
-                  </Card.Title>
-                  <Card.Description className="text-xs">
-                    {p.paidAt
-                      ? `Paid ${new Date(p.paidAt).toLocaleString()}`
-                      : "Awaiting payment"}
-                  </Card.Description>
+                  </p>
+                  <p className="truncate text-xs text-slate-500">
+                    {p.currency.toUpperCase()}
+                  </p>
                 </div>
-                <div className="flex shrink-0 flex-col items-end gap-1.5">
-                  <span className="text-sm font-semibold text-foreground">
-                    ${p.amount.toFixed(2)}{" "}
-                    <span className="text-muted-foreground">
-                      {p.currency.toUpperCase()}
-                    </span>
-                  </span>
+                <p className="min-w-0 truncate text-sm text-slate-600">
+                  {p.paidAt
+                    ? new Date(p.paidAt).toLocaleString()
+                    : "Awaiting payment"}
+                </p>
+                <div className="min-w-0 shrink-0 sm:justify-self-end">
                   <StatusBadge status={p.status} />
                 </div>
-              </Card>
+                <p className="min-w-0 text-[15px] font-semibold text-slate-900 sm:text-right">
+                  ${p.amount.toFixed(2)}
+                </p>
+              </DataTableRow>
             ))}
-          </div>
-        </ScrollShadow>
-      </Card>
-      <PaginationControls
-        meta={data.meta}
-        onPage={(page) => setParams({ page })}
+          </DataTableRows>
+          {history.isFetchingNextPage ? (
+            <div className="grid min-w-0 gap-2 pt-2">
+              {["more-1", "more-2"].map((k) => (
+                <Skeleton key={k} className="h-[68px] w-full rounded-[14px]" />
+              ))}
+            </div>
+          ) : null}
+        </DataTableBody>
+      </DataTableShell>
+      <DataTableFooter
+        shown={paid.length}
+        hasNextPage={history.hasNextPage}
+        isLoading={history.isFetchingNextPage}
+        onLoadMore={() => history.fetchNextPage()}
       />
     </>
   );

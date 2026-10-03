@@ -36,6 +36,20 @@ function roleHome(role: string): string {
   return "/dashboard";
 }
 
+function canAccess(role: string, next: string): boolean {
+  if (next === "/admin" || next.startsWith("/admin/")) return role === "ADMIN";
+  if (next === "/courier" || next.startsWith("/courier/"))
+    return role === "COURIER";
+  if (next === "/dashboard" || next.startsWith("/dashboard/"))
+    return role === "CUSTOMER";
+  return false;
+}
+
+function safeNext(role: string, next: string | null): string {
+  if (next && canAccess(role, next)) return next;
+  return roleHome(role);
+}
+
 const DEMOS = [
   { role: "ADMIN" as const, label: "Admin", email: "admin@quickdrop.com" },
   {
@@ -65,7 +79,7 @@ export function LoginForm() {
 
   const afterLogin = (role: string) => {
     queryClient.invalidateQueries({ queryKey: ["me"] });
-    router.replace(searchParams.get("next") ?? roleHome(role));
+    router.replace(safeNext(role, searchParams.get("next")));
   };
 
   const onSubmit = form.handleSubmit(async (values) => {

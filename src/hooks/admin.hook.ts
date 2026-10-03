@@ -1,5 +1,6 @@
 import {
   keepPreviousData,
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
@@ -33,6 +34,19 @@ export function useAuditLogs(query: {
   });
 }
 
+export function useAuditLogsInfinite() {
+  return useInfiniteQuery({
+    queryKey: ["admin", "audit-logs", "infinite"],
+    queryFn: ({ pageParam }) =>
+      getAuditLogs({
+        limit: 10,
+        ...(pageParam ? { cursor: pageParam as string } : {}),
+      }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.meta?.nextCursor ?? undefined,
+  });
+}
+
 export function useAllUsers(query: {
   page?: number;
   limit?: number;
@@ -43,6 +57,23 @@ export function useAllUsers(query: {
     queryKey: ["admin", "users", query],
     queryFn: () => getAllUsers(query),
     placeholderData: keepPreviousData,
+  });
+}
+
+export function useAllUsersInfinite(query: {
+  search?: string;
+  role?: UserRole;
+}) {
+  return useInfiniteQuery({
+    queryKey: ["admin", "users", "infinite", query],
+    queryFn: ({ pageParam }) =>
+      getAllUsers({
+        ...query,
+        limit: 10,
+        ...(pageParam ? { cursor: pageParam as string } : {}),
+      }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.meta?.nextCursor ?? undefined,
   });
 }
 

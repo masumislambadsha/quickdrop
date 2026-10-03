@@ -1,4 +1,9 @@
-import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+} from "@tanstack/react-query";
 import { getAllPayments, getPaymentStatus, initiatePayment } from "@/api";
 import type { PaymentStatus } from "@/types";
 
@@ -31,5 +36,19 @@ export function useAllPayments(query: {
     queryKey: ["payments", "all", query],
     queryFn: () => getAllPayments(query),
     placeholderData: keepPreviousData,
+  });
+}
+
+export function useAllPaymentsInfinite(query: { status?: PaymentStatus }) {
+  return useInfiniteQuery({
+    queryKey: ["payments", "all", "infinite", query],
+    queryFn: ({ pageParam }) =>
+      getAllPayments({
+        ...query,
+        limit: 10,
+        ...(pageParam ? { cursor: pageParam as string } : {}),
+      }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.meta?.nextCursor ?? undefined,
   });
 }

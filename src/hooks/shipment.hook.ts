@@ -26,6 +26,24 @@ export function useMyShipments(query: ShipmentListQuery) {
   });
 }
 
+const MY_SHIPMENTS_LIMIT = 10;
+
+export function useMyShipmentsInfinite(
+  query: Omit<ShipmentListQuery, "page" | "cursor" | "limit"> = {},
+) {
+  return useInfiniteQuery({
+    queryKey: ["shipments", "my", "infinite", query],
+    queryFn: ({ pageParam }) =>
+      getMyShipments({
+        ...query,
+        limit: MY_SHIPMENTS_LIMIT,
+        ...(pageParam ? { cursor: pageParam as string } : {}),
+      }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.meta?.nextCursor ?? undefined,
+  });
+}
+
 export function useAllShipments(query: ShipmentListQuery) {
   return useQuery({
     queryKey: ["shipments", "all", query],

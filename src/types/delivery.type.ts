@@ -23,6 +23,8 @@ export interface Delivery {
     destination: string;
     recipientName: string;
     recipientPhone: string;
+    packageType?: string;
+    weightKg?: number;
     status: string;
     cost: number;
   };

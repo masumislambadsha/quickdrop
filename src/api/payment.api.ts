@@ -21,6 +21,7 @@ export function getAllPayments(query?: {
   page?: number;
   limit?: number;
   status?: PaymentStatus;
+  cursor?: string;
 }) {
   return apiClient<ApiResponse<Payment[]>>("/payments", {
     method: "GET",
@@ -28,6 +29,7 @@ export function getAllPayments(query?: {
       ...(query?.page ? { page: query.page } : {}),
       ...(query?.limit ? { limit: query.limit } : {}),
       ...(query?.status ? { status: query.status } : {}),
+      ...(query?.cursor ? { cursor: query.cursor } : {}),
     },
   });
 }

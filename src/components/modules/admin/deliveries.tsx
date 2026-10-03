@@ -1,13 +1,21 @@
 "use client";
 
-import { Card, ScrollShadow } from "@heroui/react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import {
+  DataTableBody,
+  DataTableFooter,
+  DataTableHeader,
+  DataTableRow,
+  DataTableRows,
+  DataTableShell,
+} from "@/components/ui/data-table";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { useAllShipmentsInfinite } from "@/hooks";
 import { getErrorMessage } from "@/lib/apiClient";
+
+const DELIVERIES_GRID = "sm:grid-cols-[150px_minmax(0,1fr)_auto_auto]";
 
 export function AdminDeliveries() {
   const history = useAllShipmentsInfinite({ hasDelivery: true });
@@ -44,78 +52,68 @@ export function AdminDeliveries() {
 
   return (
     <>
-      <p className="text-xs text-muted-foreground">
-        Showing {items.length} of {total}{" "}
-        {total === 1 ? "delivery" : "deliveries"}
-      </p>
-      <Card className="hero-card-scope w-full min-w-0 max-w-full overflow-hidden p-0">
-        <div className="hidden grid-cols-[140px_minmax(0,1fr)_auto_auto] items-center gap-4 bg-ink px-4 py-3 text-[11px] font-black uppercase tracking-[0.08em] text-lime sm:grid">
-          <span>Shipment</span>
-          <span>Route</span>
-          <span>Delivery status</span>
-          <span className="text-right">Shipment status</span>
-        </div>
-        <ScrollShadow
-          className="max-h-[620px] w-full max-w-full p-4"
-          orientation="vertical"
-          hideScrollBar
-        >
-          <div className="grid min-w-0 gap-3">
+      <DataTableShell>
+        <DataTableHeader
+          gridClass={DELIVERIES_GRID}
+          columns={[
+            { label: "Shipment" },
+            { label: "Route" },
+            { label: "Delivery status", className: "sm:justify-self-end" },
+            { label: "Shipment status", className: "sm:justify-self-end" },
+          ]}
+        />
+        <DataTableBody>
+          <DataTableRows>
             {items.map((s) => (
-              <Card
-                key={s.id}
-                variant="transparent"
-                className="flex w-full min-w-0 flex-col gap-2 border border-border bg-card p-3 sm:grid sm:grid-cols-[130px_minmax(0,1fr)_auto_auto] sm:items-center sm:gap-3 lg:grid-cols-[140px_minmax(0,1fr)_auto_auto] lg:gap-4"
-              >
-                <Link
-                  href={`/admin/shipments/${s.id}`}
-                  className="min-w-0 truncate font-mono text-sm font-semibold text-primary hover:underline"
-                >
-                  {s.trackingNumber}
-                </Link>
-                <p className="min-w-0 truncate text-sm">
-                  {s.origin} → {s.destination}
-                </p>
-                <div className="min-w-0 shrink-0">
+              <DataTableRow key={s.id} gridClass={DELIVERIES_GRID}>
+                <div className="min-w-0">
+                  <Link
+                    href={`/admin/shipments/${s.id}`}
+                    className="block truncate text-[15px] font-medium text-slate-900 hover:underline"
+                  >
+                    {s.trackingNumber}
+                  </Link>
+                  <p className="truncate text-xs text-slate-500">
+                    {s.recipientName}
+                  </p>
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-[15px] text-slate-900">
+                    {s.origin} → {s.destination}
+                  </p>
+                  <p className="truncate text-xs text-slate-500">
+                    {s.packageType} · {s.weightKg}kg
+                  </p>
+                </div>
+                <div className="min-w-0 shrink-0 sm:justify-self-end">
                   {s.delivery ? (
                     <StatusBadge status={s.delivery.status as "ASSIGNED"} />
                   ) : (
-                    "—"
+                    <span className="text-sm text-slate-400">—</span>
                   )}
                 </div>
-                <div className="min-w-0 shrink-0 sm:text-right">
+                <div className="min-w-0 shrink-0 sm:justify-self-end">
                   <StatusBadge status={s.status} />
                 </div>
-              </Card>
+              </DataTableRow>
             ))}
-            {history.isFetchingNextPage
-              ? ["more-1", "more-2"].map((k) => (
-                  <Skeleton key={k} className="h-[68px] w-full" />
-                ))
-              : null}
-          </div>
-        </ScrollShadow>
-      </Card>
-      <div className="flex flex-col items-center gap-2 pt-1">
-        <p className="text-xs text-muted-foreground">
-          Showing {items.length} of {total}
-        </p>
-        {history.hasNextPage ? (
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => history.fetchNextPage()}
-            disabled={history.isFetchingNextPage}
-            className="min-w-40"
-          >
-            {history.isFetchingNextPage ? "Loading…" : "Load more"}
-          </Button>
-        ) : (
-          <p className="text-xs font-semibold text-muted-foreground">
-            You’ve reached the end.
-          </p>
-        )}
-      </div>
+          </DataTableRows>
+          {history.isFetchingNextPage ? (
+            <div className="grid min-w-0 gap-2 pt-2">
+              {["more-1", "more-2"].map((k) => (
+                <Skeleton key={k} className="h-[68px] w-full rounded-[14px]" />
+              ))}
+            </div>
+          ) : null}
+        </DataTableBody>
+      </DataTableShell>
+      <DataTableFooter
+        shown={items.length}
+        total={total}
+        hasNextPage={history.hasNextPage}
+        isLoading={history.isFetchingNextPage}
+        onLoadMore={() => history.fetchNextPage()}
+      />
     </>
   );
 }

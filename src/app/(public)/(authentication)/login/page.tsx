@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import AuthLoading from "@/components/auth/auth-loading";
+import RedirectIfAuthenticated from "@/components/auth/redirect-if-authenticated";
 import { LoginForm } from "@/components/form/login-form";
 
 export const metadata: Metadata = {
@@ -25,7 +26,9 @@ export default function LoginPage() {
       </p>
       <div className="mt-8">
         <Suspense fallback={<AuthLoading />}>
-          <LoginForm />
+          <RedirectIfAuthenticated>
+            <LoginForm />
+          </RedirectIfAuthenticated>
         </Suspense>
       </div>
     </div>

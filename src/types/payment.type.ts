@@ -16,6 +16,7 @@ export interface Payment {
     trackingNumber: string;
     origin: string;
     destination: string;
+    customer?: { name: string; email: string };
   };
 }
 

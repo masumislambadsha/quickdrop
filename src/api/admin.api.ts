@@ -17,6 +17,7 @@ export function getAuditLogs(query?: {
   page?: number;
   limit?: number;
   action?: string;
+  cursor?: string;
 }) {
   return apiClient<ApiResponse<AuditLog[]>>("/admin/audit-logs", {
     method: "GET",
@@ -24,6 +25,7 @@ export function getAuditLogs(query?: {
       ...(query?.page ? { page: query.page } : {}),
       ...(query?.limit ? { limit: query.limit } : {}),
       ...(query?.action ? { action: query.action } : {}),
+      ...(query?.cursor ? { cursor: query.cursor } : {}),
     },
   });
 }
@@ -47,6 +49,7 @@ export function getAllUsers(query?: {
   limit?: number;
   search?: string;
   role?: UserRole;
+  cursor?: string;
 }) {
   return apiClient<ApiResponse<ManagedUser[]>>("/users", {
     method: "GET",
@@ -55,6 +58,7 @@ export function getAllUsers(query?: {
       ...(query?.limit ? { limit: query.limit } : {}),
       ...(query?.search ? { search: query.search } : {}),
       ...(query?.role ? { role: query.role } : {}),
+      ...(query?.cursor ? { cursor: query.cursor } : {}),
     },
   });
 }

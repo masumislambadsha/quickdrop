@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
+import AuthLoading from "@/components/auth/auth-loading";
+import RedirectIfAuthenticated from "@/components/auth/redirect-if-authenticated";
 import { RegisterForm } from "@/components/form/register-form";
 
 export const metadata: Metadata = {
@@ -22,7 +25,11 @@ export default function RegisterPage() {
         </Link>
       </p>
       <div className="mt-8">
-        <RegisterForm />
+        <Suspense fallback={<AuthLoading />}>
+          <RedirectIfAuthenticated>
+            <RegisterForm />
+          </RedirectIfAuthenticated>
+        </Suspense>
       </div>
     </div>
   );

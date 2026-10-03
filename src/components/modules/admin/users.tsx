@@ -2,29 +2,29 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { PaginationControls } from "@/components/modules/shipments/shipment-table";
 import { ROLE_OPTIONS } from "@/components/modules/shipments/status-options";
+import {
+  DataTableBody,
+  DataTableFooter,
+  DataTableHeader,
+  DataTableRow,
+  DataTableRows,
+  DataTableShell,
+} from "@/components/ui/data-table";
 import { Dialog } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  useAllUsers,
+  useAllUsersInfinite,
   useChangeUserRole,
   useChangeUserStatus,
   useDebounce,
   useListParams,
 } from "@/hooks";
 import { getErrorMessage } from "@/lib/apiClient";
+import { cn } from "@/lib/utils";
 import type { ManagedUser, UserRole } from "@/types";
 
 const ROLE_DIALOG_OPTIONS = [
@@ -33,18 +33,22 @@ const ROLE_DIALOG_OPTIONS = [
   { value: "ADMIN", label: "Admin" },
 ];
 
+const USERS_GRID = "sm:grid-cols-[minmax(0,1fr)_auto_auto_auto]";
+
 export function AdminUsers() {
   const { params, setParams } = useListParams();
   const debouncedSearch = useDebounce(params.search, 500);
-  const query = {
-    page: params.page,
-    limit: 10,
-    search: debouncedSearch || undefined,
-    role: (params.status as UserRole) || undefined,
-  };
-  const { data, isPending, isError, error, refetch } = useAllUsers(query);
+  const roleFilter = (params.status as UserRole) || undefined;
+  const history = useAllUsersInfinite({
+    ...(debouncedSearch ? { search: debouncedSearch } : {}),
+    ...(roleFilter ? { role: roleFilter } : {}),
+  });
+  const { refetch } = history;
   const roleMutation = useChangeUserRole();
   const statusMutation = useChangeUserStatus();
+
+  const items = history.data?.pages.flatMap((p) => p.data) ?? [];
+  const total = history.data?.pages[0]?.meta?.total ?? 0;
 
   const [roleTarget, setRoleTarget] = useState<ManagedUser | null>(null);
   const [roleValue, setRoleValue] = useState<UserRole>("CUSTOMER");
@@ -89,7 +93,7 @@ export function AdminUsers() {
   };
 
   return (
-    <div className="grid gap-4">
+    <div className="grid w-full min-w-0 gap-4">
       <div className="flex flex-col gap-2 sm:flex-row">
         <Input
           placeholder="Search name or email..."
@@ -108,75 +112,96 @@ export function AdminUsers() {
         />
       </div>
 
-      {isPending ? (
+      {history.isPending ? (
         <div className="grid gap-2">
           {["sk-1", "sk-2", "sk-3", "sk-4", "sk-5"].map((k) => (
             <Skeleton key={k} className="h-12 w-full" />
           ))}
         </div>
-      ) : isError ? (
-        <p className="text-sm text-destructive">{getErrorMessage(error)}</p>
-      ) : (data.data ?? []).length === 0 ? (
+      ) : history.isError ? (
+        <p className="text-sm text-destructive">
+          {getErrorMessage(history.error)}
+        </p>
+      ) : items.length === 0 ? (
         <EmptyState title="No users found" />
       ) : (
         <>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>User</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {(data.data ?? []).map((u) => (
-                <TableRow key={u.id}>
-                  <TableCell>
-                    <p className="font-bold text-ink">{u.name}</p>
-                    <p className="text-xs text-ink/50">{u.email}</p>
-                  </TableCell>
-                  <TableCell>
-                    <span className="inline-flex items-center rounded-full bg-forest px-3 py-1 text-[11px] font-black uppercase tracking-[0.06em] text-cream">
-                      {u.role}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-[0.06em] ${
-                        u.status === "ACTIVE"
-                          ? "bg-lime text-ink"
-                          : "bg-[#d64545] text-white"
-                      }`}
-                    >
-                      {u.status}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+          <DataTableShell>
+            <DataTableHeader
+              gridClass={USERS_GRID}
+              columns={[
+                { label: "User" },
+                { label: "Role", className: "sm:justify-self-end" },
+                { label: "Status", className: "sm:justify-self-end" },
+                { label: "Actions", className: "sm:justify-self-end" },
+              ]}
+            />
+            <DataTableBody>
+              <DataTableRows>
+                {items.map((u) => (
+                  <DataTableRow key={u.id} gridClass={USERS_GRID}>
+                    <div className="min-w-0">
+                      <p className="truncate text-[15px] font-medium text-slate-900">
+                        {u.name}
+                      </p>
+                      <p className="truncate text-xs text-slate-500">
+                        {u.email}
+                      </p>
+                    </div>
+                    <div className="min-w-0 shrink-0 sm:justify-self-end">
+                      <span className="inline-flex items-center rounded-full bg-slate-200/80 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.06em] text-slate-600">
+                        {u.role}
+                      </span>
+                    </div>
+                    <div className="min-w-0 shrink-0 sm:justify-self-end">
+                      <span
+                        className={cn(
+                          "inline-flex items-center rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.06em]",
+                          u.status === "ACTIVE"
+                            ? "bg-lime text-ink"
+                            : "bg-[#d64545] text-white",
+                        )}
+                      >
+                        {u.status}
+                      </span>
+                    </div>
+                    <div className="flex min-w-0 gap-2 sm:justify-self-end">
                       <button
                         type="button"
                         onClick={() => openRole(u)}
-                        className="rounded-full border-2 border-ink/15 px-3.5 py-1.5 text-xs font-bold text-ink transition-colors hover:border-ink cursor-pointer"
+                        className="cursor-pointer rounded-full border border-slate-300 px-3.5 py-1.5 text-xs font-bold text-slate-700 transition-colors hover:border-slate-500"
                       >
                         Role
                       </button>
                       <button
                         type="button"
                         onClick={() => setStatusTarget(u)}
-                        className="rounded-full border-2 border-ink/15 px-3.5 py-1.5 text-xs font-bold text-ink transition-colors hover:border-[#d64545] hover:text-[#d64545] cursor-pointer"
+                        className="cursor-pointer rounded-full border border-slate-300 px-3.5 py-1.5 text-xs font-bold text-slate-700 transition-colors hover:border-[#d64545] hover:text-[#d64545]"
                       >
                         {u.status === "BLOCKED" ? "Activate" : "Block"}
                       </button>
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <PaginationControls
-            meta={data.meta}
-            onPage={(page) => setParams({ page })}
+                  </DataTableRow>
+                ))}
+              </DataTableRows>
+              {history.isFetchingNextPage ? (
+                <div className="grid min-w-0 gap-2 pt-2">
+                  {["more-1", "more-2"].map((k) => (
+                    <Skeleton
+                      key={k}
+                      className="h-[68px] w-full rounded-[14px]"
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </DataTableBody>
+          </DataTableShell>
+          <DataTableFooter
+            shown={items.length}
+            total={total}
+            hasNextPage={history.hasNextPage}
+            isLoading={history.isFetchingNextPage}
+            onLoadMore={() => history.fetchNextPage()}
           />
         </>
       )}

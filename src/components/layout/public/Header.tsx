@@ -22,7 +22,7 @@ function roleHome(role?: string): string {
 
 function roleProfile(role?: string): string {
   if (role === "COURIER") return "/courier/profile";
-  if (role === "ADMIN") return "/admin";
+  if (role === "ADMIN") return "/admin/profile";
   return "/dashboard/profile";
 }
 

@@ -20,6 +20,12 @@ function roleHome(role?: string): string {
   return "/dashboard";
 }
 
+function roleProfile(role?: string): string {
+  if (role === "COURIER") return "/courier/profile";
+  if (role === "ADMIN") return "/admin";
+  return "/dashboard/profile";
+}
+
 export function Header() {
   const [open, setOpen] = useState(false);
   const hasTokens = useAuthStore((s) => !!s.accessToken);
@@ -28,6 +34,7 @@ export function Header() {
   const user = hasTokens ? data?.data : undefined;
   const checking = hasTokens && (isPending || !user);
   const home = roleHome(user?.role);
+  const profile = roleProfile(user?.role);
   const firstName = user?.name?.split(" ")[0] ?? "Account";
   const initial = (user?.name ?? "Q").charAt(0).toUpperCase();
 
@@ -68,8 +75,8 @@ export function Header() {
           ) : user ? (
             <>
               <Link
-                href={home}
-                title="Go to dashboard"
+                href={profile}
+                title="View profile"
                 className="flex min-w-0 items-center gap-2 rounded-full border border-cream/15 py-1 pr-3 pl-1 transition-colors hover:border-lime/50"
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-lime text-sm font-black text-ink">
@@ -130,7 +137,7 @@ export function Header() {
         >
           {user ? (
             <Link
-              href={home}
+              href={profile}
               onClick={close}
               className="mb-2 flex items-center gap-3 rounded-2xl bg-cream/5 p-3"
             >

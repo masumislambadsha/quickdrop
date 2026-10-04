@@ -51,9 +51,7 @@ export function Header() {
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-lime text-ink">
             <Package className="h-5 w-5" strokeWidth={2.5} />
           </span>
-          <span className="display truncate text-xl text-cream">
-            QuickDrop
-          </span>
+          <span className="display truncate text-xl text-cream">QuickDrop</span>
         </Link>
         <nav className="hidden items-center gap-7 text-sm font-semibold text-cream/80 md:flex">
           {links.map((l) => (

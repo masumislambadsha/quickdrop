@@ -116,6 +116,22 @@ export function useUpdateDeliveryStatus() {
       status: DeliveryStatus;
       failedReason?: string;
     }) => updateDeliveryStatus(id, status, failedReason),
+    // Optimistic UI (B7A7 Day 4): reflect the new status instantly,
+    // roll back on failure for graceful error handling.
+    onMutate: async ({ id, status }) => {
+      await queryClient.cancelQueries({ queryKey: ["deliveries", id] });
+      const previous = queryClient.getQueryData(["deliveries", id]);
+      queryClient.setQueryData(
+        ["deliveries", id],
+        (old: { data?: { status?: DeliveryStatus } } | undefined) =>
+          old?.data ? { ...old, data: { ...old.data, status } } : old,
+      );
+      return { previous };
+    },
+    onError: (_err, { id }, context) => {
+      if (context?.previous)
+        queryClient.setQueryData(["deliveries", id], context.previous);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["deliveries"] });
       queryClient.invalidateQueries({ queryKey: ["shipments"] });

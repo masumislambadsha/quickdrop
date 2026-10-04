@@ -60,13 +60,14 @@ npm run format  # biome format --write
 2. Import on Vercel → Framework preset **Next.js**, Root Directory `frontend/` if monorepo.
 3. Environment variables:
    - `NEXT_PUBLIC_API_BASE_URL=https://courier-and-logistics.vercel.app/api/v1`
-   - `NEXT_PUBLIC_FRONTEND_URL=https://<your-frontend>.vercel.app`
-   - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`
+   - `NEXT_PUBLIC_FRONTEND_URL=https://quickdrop-frontend-dun.vercel.app`
+   - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `NEXT_PUBLIC_CLOUDINARY_API_KEY`,
+     `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`
 4. Deploy, then add the Vercel frontend URL to the backend `FRONTEND_URL` env (CORS + Stripe
    `success_url`/`cancel_url` derive from it).
 5. Verify live: one-click demo logins for all 3 roles + one Stripe test-card payment end to end.
 
-## Submission (B7A7 template — fill live URLs)
+## Submission (B7A7 template)
 
 ```
 Project Name            : QuickDrop — Courier & Logistics Platform
@@ -75,7 +76,7 @@ Frontend Repo           : https://github.com/masumislambadsha/quickdrop
 Live Backend URL        : https://courier-and-logistics.vercel.app
 Live Frontend URL       : https://quickdrop-frontend-dun.vercel.app
 API Documentation       : https://documenter.getpostman.com/view/55365742/2sBYAvvqVg
-Demo Video              : https://drive.google.com/file/d/xyz/view (5–10 min B7A7 walkthrough)
+Demo Video              : https://drive.google.com/file/d/1GrM2DSxG6AnjdOTTcu2upC6_znClRDaO/view?usp=sharing
 Demo Admin Email        : admin@quickdrop.com
 Demo Admin Password     : Admin@1234
 Demo Customer           : customer@quickdrop.com / Customer@1234

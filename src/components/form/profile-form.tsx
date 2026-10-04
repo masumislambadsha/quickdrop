@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useChangePassword, useGetMe, useUpdateMe } from "@/hooks";
 import { getErrorMessage } from "@/lib/apiClient";
+import { AvatarUpload } from "./avatar-upload";
 
 const profileSchema = z.object({
   name: z
@@ -29,6 +30,8 @@ const profileSchema = z.object({
   contactNumber: z.string().max(20).optional().or(z.literal("")),
   address: z.string().max(200).optional().or(z.literal("")),
   city: z.string().max(50).optional().or(z.literal("")),
+  imageUrl: z.string().url().max(500).optional().or(z.literal("")),
+  imagePublicId: z.string().max(200).optional().or(z.literal("")),
 });
 
 const passwordSchema = z
@@ -49,10 +52,21 @@ export function ProfileForm() {
   const { data, isPending } = useGetMe();
   const updateMutation = useUpdateMe();
   const passwordMutation = useChangePassword();
+  const [avatar, setAvatar] = useState<{
+    url: string;
+    publicId: string;
+  } | null>(null);
 
   const profile = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
-    defaultValues: { name: "", contactNumber: "", address: "", city: "" },
+    defaultValues: {
+      name: "",
+      contactNumber: "",
+      address: "",
+      city: "",
+      imageUrl: "",
+      imagePublicId: "",
+    },
   });
   const password = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
@@ -68,7 +82,10 @@ export function ProfileForm() {
           user.customer?.contactNumber ?? user.courier?.contactNumber ?? "",
         address: user.customer?.address ?? "",
         city: user.customer?.city ?? user.courier?.currentCity ?? "",
+        imageUrl: user.imageUrl ?? "",
+        imagePublicId: "",
       });
+      if (user.imageUrl) setAvatar({ url: user.imageUrl, publicId: "" });
     }
   }, [data, profile]);
 
@@ -85,6 +102,14 @@ export function ProfileForm() {
         contactNumber: values.contactNumber || undefined,
         address: values.address || undefined,
         city: values.city || undefined,
+        ...(avatar
+          ? {
+              imageUrl: avatar.url,
+              imagePublicId: avatar.publicId || undefined,
+            }
+          : values.imageUrl
+            ? { imageUrl: values.imageUrl }
+            : {}),
       });
       toast.success("Profile updated.");
     } catch (err) {
@@ -119,6 +144,16 @@ export function ProfileForm() {
         </CardHeader>
         <CardContent>
           <form onSubmit={onProfile} className="grid gap-4">
+            <AvatarUpload
+              currentUrl={avatar?.url ?? user.imageUrl}
+              onUploaded={(url, publicId) => {
+                setAvatar({ url, publicId });
+                profile.setValue("imageUrl", url, { shouldDirty: true });
+                profile.setValue("imagePublicId", publicId, {
+                  shouldDirty: true,
+                });
+              }}
+            />
             <div className="grid gap-1.5">
               <Label>Full name</Label>
               <Input {...profile.register("name")} />

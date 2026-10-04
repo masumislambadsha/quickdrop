@@ -6,6 +6,8 @@ export interface UpdateMePayload {
   contactNumber?: string;
   address?: string;
   city?: string;
+  imageUrl?: string;
+  imagePublicId?: string;
 }
 
 export function updateMe(payload: UpdateMePayload) {

@@ -34,34 +34,73 @@ function roleFromToken(token: string): string | null {
 /**
  * Next.js 16 route guard (proxy replaces the deprecated middleware convention).
  *
- * Why this proxy does NOT redirect unauthenticated users itself:
- * the backend sets its `accessToken` cookie as `SameSite=Lax`, so browsers
- * never send/store it on cross-site deployments (e.g. localhost or a
- * different Vercel host calling the API host). Auth tokens therefore live
- * in the client store (localStorage + Bearer header), which a proxy cannot
- * read. Authorization is enforced by the client-side RoleGuard (per-role)
- * and by backend RBAC on every endpoint.
+ * Hybrid enforcement (per B7A7 mandatory middleware requirement):
+ * - `qd_auth` / `qd_role` are lightweight readable UX cookies synced by
+ *   `useAuthStore` on login/logout (Edge cannot read localStorage).
+ * - Real authorization stays in client-side RoleGuard + backend RBAC on every
+ *   endpoint; the proxy only handles redirects to avoid false loops.
  *
  * What the proxy DOES do:
- * - Keeps logged-in users (cookie present, e.g. same-site) away from
- *   /login and /register by bouncing them to `?next=` or their role
- *   dashboard.
- * - Lets RoleGuard handle all protected-route decisions otherwise, avoiding
- *   false redirect loops back to `/login?next=...`.
+ * - Blocks unauthenticated visits to /admin, /courier, /dashboard/* by
+ *   bouncing them to `/login?next=<pathname+search>`.
+ * - Blocks role mismatch (e.g. CUSTOMER -> /admin) by redirecting to the
+ *   caller's role home.
+ * - Keeps logged-in users away from /login and /register by bouncing them
+ *   to `?next=` (if permitted) or their role dashboard.
  */
+
+function requiredRoleFor(pathname: string): string | null {
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) return "ADMIN";
+  if (pathname === "/courier" || pathname.startsWith("/courier/"))
+    return "COURIER";
+  if (pathname === "/dashboard" || pathname.startsWith("/dashboard/"))
+    return "CUSTOMER";
+  return null;
+}
+
 export function proxy(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
   const accessToken = request.cookies.get("accessToken")?.value;
+  // UX cookies synced from localStorage auth store (cross-site safe).
+  const uxAuth = request.cookies.get("qd_auth")?.value;
+  const uxRole = request.cookies.get("qd_role")?.value;
+  const role = uxRole ?? (accessToken ? roleFromToken(accessToken) : null);
+  const isAuthenticated = Boolean(accessToken ?? uxAuth);
 
   const isAuthPage = pathname === "/login" || pathname === "/register";
-  if (isAuthPage && accessToken) {
-    const next = searchParams.get("next");
-    const dest =
-      next &&
-      PROTECTED_PREFIXES.some((p) => next === p || next.startsWith(`${p}/`))
-        ? next
-        : (ROLE_HOME[roleFromToken(accessToken) ?? ""] ?? "/");
-    return NextResponse.redirect(new URL(dest, request.url));
+  if (isAuthPage) {
+    if (isAuthenticated) {
+      const next = searchParams.get("next");
+      const dest =
+        next &&
+        PROTECTED_PREFIXES.some((p) => next === p || next.startsWith(`${p}/`))
+          ? next
+          : (ROLE_HOME[role ?? ""] ?? "/");
+      // Only honour ?next= when the caller's role may access it.
+      if (next && role) {
+        const need = requiredRoleFor(next);
+        if (need && need !== role) {
+          return NextResponse.redirect(
+            new URL(ROLE_HOME[role] ?? "/", request.url),
+          );
+        }
+      }
+      return NextResponse.redirect(new URL(dest, request.url));
+    }
+    return NextResponse.next();
+  }
+
+  const need = requiredRoleFor(pathname);
+  if (need) {
+    if (!isAuthenticated) {
+      const next = encodeURIComponent(pathname + request.nextUrl.search);
+      return NextResponse.redirect(new URL(`/login?next=${next}`, request.url));
+    }
+    if (role && role !== need) {
+      return NextResponse.redirect(
+        new URL(ROLE_HOME[role] ?? "/login", request.url),
+      );
+    }
   }
 
   return NextResponse.next();

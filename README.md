@@ -71,7 +71,7 @@ npm run format  # biome format --write
 
 ```
 Project Name            : QuickDrop — Courier & Logistics Platform
-Backend Repo            : https://github.com/masumislambadsha/quickdrop-
+Backend Repo            : https://github.com/masumislambadsha/quickdrop-backend
 Frontend Repo           : https://github.com/masumislambadsha/quickdrop
 Live Backend URL        : https://courier-and-logistics.vercel.app
 Live Frontend URL       : https://quickdrop-frontend-dun.vercel.app
